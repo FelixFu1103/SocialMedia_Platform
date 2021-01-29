@@ -3,7 +3,7 @@ const User = require('../models/user');
 const formidable = require('formidable');
 const fs = require('fs');
 
-exports.userById = (req, res, next, id) => {
+const userById = (req, res, next, id) => {
     User.findById(id)
         // populate followers and following users array
         .populate('following', '_id name')
@@ -19,7 +19,7 @@ exports.userById = (req, res, next, id) => {
         });
 };
 
-exports.hasAuthorization = (req, res, next) => {
+const hasAuthorization = (req, res, next) => {
     let sameUser = req.profile && req.auth && req.profile._id == req.auth._id;
     let adminUser = req.profile && req.auth && req.auth.role === 'admin';
 
@@ -36,7 +36,7 @@ exports.hasAuthorization = (req, res, next) => {
     next();
 };
 
-exports.allUsers = (req, res) => {
+const allUsers = (req, res) => {
     User.find((err, users) => {
         if (err) {
             return res.status(400).json({
@@ -47,7 +47,7 @@ exports.allUsers = (req, res) => {
     }).select('name email updated created role');
 };
 
-exports.getUser = (req, res) => {
+const getUser = (req, res) => {
     req.profile.hashed_password = undefined;
     req.profile.salt = undefined;
     return res.json(req.profile);
@@ -69,7 +69,7 @@ exports.getUser = (req, res) => {
 //     });
 // };
 
-exports.updateUser = (req, res, next) => {
+const updateUser = (req, res, next) => {
     let form = new formidable.IncomingForm();
     // console.log("incoming form data: ", form);
     form.keepExtensions = true;
@@ -106,7 +106,7 @@ exports.updateUser = (req, res, next) => {
     });
 };
 
-exports.userPhoto = (req, res, next) => {
+const userPhoto = (req, res, next) => {
     if (req.profile.photo.data) {
         res.set(('Content-Type', req.profile.photo.contentType));
         return res.send(req.profile.photo.data);
@@ -114,7 +114,7 @@ exports.userPhoto = (req, res, next) => {
     next();
 };
 
-exports.deleteUser = (req, res, next) => {
+const deleteUser = (req, res, next) => {
     let user = req.profile;
     user.remove((err, user) => {
         if (err) {
@@ -127,7 +127,7 @@ exports.deleteUser = (req, res, next) => {
 };
 
 // follow unfollow
-exports.addFollowing = (req, res, next) => {
+const addFollowing = (req, res, next) => {
     User.findByIdAndUpdate(req.body.userId, { $push: { following: req.body.followId } }, (err, result) => {
         if (err) {
             return res.status(400).json({ error: err });
@@ -136,7 +136,7 @@ exports.addFollowing = (req, res, next) => {
     });
 };
 
-exports.addFollower = (req, res) => {
+const addFollower = (req, res) => {
     User.findByIdAndUpdate(req.body.followId, { $push: { followers: req.body.userId } }, { new: true })
         .populate('following', '_id name')
         .populate('followers', '_id name')
@@ -153,7 +153,7 @@ exports.addFollower = (req, res) => {
 };
 
 // remove follow unfollow
-exports.removeFollowing = (req, res, next) => {
+const removeFollowing = (req, res, next) => {
     User.findByIdAndUpdate(req.body.userId, { $pull: { following: req.body.unfollowId } }, (err, result) => {
         if (err) {
             return res.status(400).json({ error: err });
@@ -162,7 +162,7 @@ exports.removeFollowing = (req, res, next) => {
     });
 };
 
-exports.removeFollower = (req, res) => {
+const removeFollower = (req, res) => {
     User.findByIdAndUpdate(req.body.unfollowId, { $pull: { followers: req.body.userId } }, { new: true })
         .populate('following', '_id name')
         .populate('followers', '_id name')
@@ -178,7 +178,7 @@ exports.removeFollower = (req, res) => {
         });
 };
 
-exports.findPeople = (req, res) => {
+const findPeople = (req, res) => {
     let following = req.profile.following;
     following.push(req.profile._id);
     User.find({ _id: { $nin: following } }, (err, users) => {
@@ -190,3 +190,16 @@ exports.findPeople = (req, res) => {
         res.json(users);
     }).select('name');
 };
+
+exports.removeFollowing = removeFollowing
+exports.findPeople = findPeople
+exports.removeFollower = removeFollower
+exports.addFollower = addFollower
+exports.addFollowing = addFollowing
+exports.deleteUser = deleteUser
+exports.userPhoto = userPhoto
+exports.userById = userById
+exports.updateUser = updateUser
+exports.getUser = getUser
+exports.hasAuthorization = hasAuthorization
+exports.allUsers = allUsers

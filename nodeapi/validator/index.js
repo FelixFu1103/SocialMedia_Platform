@@ -1,9 +1,9 @@
-exports.createPostValidator = (req, res, next) => {
+const createPostValidator = (req, res, next) => {
     // title
     req.check('title', 'Write a title').notEmpty();
-    req.check('title', 'Title must be between 4 to 150 characters').isLength({
+    req.check('title', 'Title must be between 4 to 15 characters').isLength({
         min: 4,
-        max: 150
+        max: 15
     });
     // body
     req.check('body', 'Write a body').notEmpty();
@@ -22,7 +22,7 @@ exports.createPostValidator = (req, res, next) => {
     next();
 };
 
-exports.userSignupValidator = (req, res, next) => {
+const userSignupValidator = (req, res, next) => {
     // name is not null and between 4-10 characters
     req.check('name', 'Name is required').notEmpty();
     // email is not null, valid and normalized
@@ -51,7 +51,7 @@ exports.userSignupValidator = (req, res, next) => {
     next();
 };
 
-exports.userSigninValidator = (request, response, next) => {
+const userSigninValidator = (request, response, next) => {
     request
         .check('email', 'Email must be between 3 to 32 characters')
         .matches(
@@ -75,7 +75,7 @@ exports.userSigninValidator = (request, response, next) => {
     next();
 };
 
-exports.passwordResetValidator = (req, res, next) => {
+const passwordResetValidator = (req, res, next) => {
     // check for password
     req.check('newPassword', 'Password is required').notEmpty();
     req.check('newPassword')
@@ -97,3 +97,9 @@ exports.passwordResetValidator = (req, res, next) => {
     // proceed to next middleware or ...
     next();
 };
+
+
+exports.userSigninValidator = userSigninValidator
+exports.userSignupValidator = userSignupValidator
+exports.createPostValidator = createPostValidator
+exports.passwordResetValidator = passwordResetValidator
