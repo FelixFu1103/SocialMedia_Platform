@@ -3,7 +3,7 @@ const formidable = require('formidable');
 const fs = require('fs');
 const _ = require('lodash');
 
-exports.postById = (req, res, next, id) => {
+const postById = (req, res, next, id) => {
     Post.findById(id)
         .populate('postedBy', '_id name')
         .populate('comments.postedBy', '_id name')
@@ -20,23 +20,8 @@ exports.postById = (req, res, next, id) => {
         });
 };
 
-/*
-exports.getPosts = (req, res) => {
-    const posts = Post.find()
-        .populate("postedBy", "_id name")
-        .populate("comments", "text created")
-        .populate("comments.postedBy", "_id name")
-        .select("_id title body created likes")
-        .sort({ created: -1 })
-        .then(posts => {
-            res.json(posts);
-        })
-        .catch(err => console.log(err));
-};
-*/
-
 // with pagination
-exports.getPosts = async (req, res) => {
+const getPosts = async (req, res) => {
     // get current page from req.query or use default value of 1
     const currentPage = req.query.page || 1;
     // return 3 posts per page
@@ -63,7 +48,7 @@ exports.getPosts = async (req, res) => {
         .catch(err => console.log(err));
 };
 
-exports.createPost = (req, res, next) => {
+const createPost = (req, res, next) => {
     let form = new formidable.IncomingForm();
     form.keepExtensions = true;
     form.parse(req, (err, fields, files) => {
@@ -93,7 +78,7 @@ exports.createPost = (req, res, next) => {
     });
 };
 
-exports.postsByUser = (req, res) => {
+const postsByUser = (req, res) => {
     Post.find({ postedBy: req.profile._id })
         .populate('postedBy', '_id name')
         .select('_id title body created likes')
@@ -108,7 +93,7 @@ exports.postsByUser = (req, res) => {
         });
 };
 
-exports.isPoster = (req, res, next) => {
+const isPoster = (req, res, next) => {
     let sameUser = req.post && req.auth && req.post.postedBy._id == req.auth._id;
     let adminUser = req.post && req.auth && req.auth.role === 'admin';
 
@@ -139,7 +124,7 @@ exports.isPoster = (req, res, next) => {
 //     });
 // };
 
-exports.updatePost = (req, res, next) => {
+const updatePost = (req, res, next) => {
     let form = new formidable.IncomingForm();
     form.keepExtensions = true;
     form.parse(req, (err, fields, files) => {
@@ -169,7 +154,7 @@ exports.updatePost = (req, res, next) => {
     });
 };
 
-exports.deletePost = (req, res) => {
+const deletePost = (req, res) => {
     let post = req.post;
     post.remove((err, post) => {
         if (err) {
@@ -183,16 +168,16 @@ exports.deletePost = (req, res) => {
     });
 };
 
-exports.photo = (req, res, next) => {
+const photo = (req, res, next) => {
     res.set('Content-Type', req.post.photo.contentType);
     return res.send(req.post.photo.data);
 };
 
-exports.singlePost = (req, res) => {
+const singlePost = (req, res) => {
     return res.json(req.post);
 };
 
-exports.like = (req, res) => {
+const like = (req, res) => {
     Post.findByIdAndUpdate(req.body.postId, { $push: { likes: req.body.userId } }, { new: true }).exec(
         (err, result) => {
             if (err) {
@@ -206,7 +191,7 @@ exports.like = (req, res) => {
     );
 };
 
-exports.unlike = (req, res) => {
+const unlike = (req, res) => {
     Post.findByIdAndUpdate(req.body.postId, { $pull: { likes: req.body.userId } }, { new: true }).exec(
         (err, result) => {
             if (err) {
@@ -220,7 +205,7 @@ exports.unlike = (req, res) => {
     );
 };
 
-exports.comment = (req, res) => {
+const comment = (req, res) => {
     let comment = req.body.comment;
     comment.postedBy = req.body.userId;
 
@@ -238,7 +223,7 @@ exports.comment = (req, res) => {
         });
 };
 
-exports.uncomment = (req, res) => {
+const uncomment = (req, res) => {
     let comment = req.body.comment;
 
     Post.findByIdAndUpdate(req.body.postId, { $pull: { comments: { _id: comment._id } } }, { new: true })
@@ -255,32 +240,8 @@ exports.uncomment = (req, res) => {
         });
 };
 
-// exports.updateComment = async (req, res) => {
-//     const comment = req.body.comment;
-//     // const id = req.body.id;
-//     const postId = req.body.postId;
-//     const userId = req.body.userId;
-//     // comment.postedBy = req.body.userId;
 
-//     const result = await Post.findByIdAndUpdate(
-//         postId,
-//         {
-//             $set: {
-//                 comments: {
-//                     _id: comment._id,
-//                     text: comment.text,
-//                     postedBy: userId
-//                 }
-//             }
-//         },
-//         { new: true, overwrite: false }
-//     )
-//         .populate('comments.postedBy', '_id name')
-//         .populate('postedBy', '_id name');
-//     res.json(result);
-// };
-
-exports.updateComment = (req, res) => {
+const updateComment = (req, res) => {
     let comment = req.body.comment;
 
     Post.findByIdAndUpdate(req.body.postId, { $pull: { comments: { _id: comment._id } } }).exec((err, result) => {
@@ -309,45 +270,17 @@ exports.updateComment = (req, res) => {
     });
 };
 
-/*
-
-// update commennt by Alaki
-exports.updateComment = async (req, res) => {
-  const commentId = req.body.id;
-  const comment = req.body.comment;
- 
-  const updatedComment = await Post.updateOne(
-    { comments: { $elemMatch: { _id: commentId } } },
-    { $set: { "comments.$.text": comment } }
-  );
-  if (!updatedComment)
-    res.status(404).json({ message: Language.fa.NoPostFound });
- 
-  res.json(updatedComment);
-};
-
-// update commennt with auth
-exports.updateComment = async (req, res) => {
-  const commentId = req.body.id;
-  const comment = req.body.comment;
-  const postId = req.params.id;
- 
-  const post = await Post.findById(postId);
-  const com = post.comments.map(comment => comment.id).indexOf(commentId);
-  const singleComment = post.comments.splice(com, 1);
-  let authorized = singleComment[0].commentedBy;
-  console.log("Security Check Passed ?", req.auth._id == authorized);
- 
-  if (authorized != req.auth._id)
-    res.status(401).json({ mesage: Language.fa.UnAuthorized });
- 
-  const updatedComment = await Post.updateOne(
-    { comments: { $elemMatch: { _id: commentId } } },
-    { $set: { "comments.$.text": comment } }
-  );
-  if (!updatedComment)
-    res.status(404).json({ message: Language.fr.NoPostFound });
- 
-  res.json({ message: Language.fr.CommentUpdated });
-};
- */
+exports.postById = postById
+exports.getPosts = getPosts
+exports.createPost = createPost
+exports.postsByUser = postsByUser
+exports.isPoster = isPoster
+exports.updatePost = updatePost
+exports.deletePost = deletePost
+exports.photo = photo
+exports.singlePost = singlePost
+exports.like = like
+exports.unlike = unlike
+exports.comment = comment
+exports.uncomment = uncomment
+exports.updateComment = updateComment

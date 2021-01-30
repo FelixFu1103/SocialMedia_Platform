@@ -6,7 +6,7 @@ const _ = require('lodash');
 const { OAuth2Client } = require('google-auth-library');
 const { sendEmail } = require('../helpers');
 
-exports.signup = async (req, res) => {
+const signup = async (req, res) => {
     const userExists = await User.findOne({ email: req.body.email });
     if (userExists)
         return res.status(403).json({
@@ -17,7 +17,7 @@ exports.signup = async (req, res) => {
     res.status(200).json({ message: 'Signup success! Please login.' });
 };
 
-exports.signin = (req, res) => {
+const signin = (req, res) => {
     // find the user based on email
     const { email, password } = req.body;
     User.findOne({ email }, (err, user) => {
@@ -44,17 +44,17 @@ exports.signin = (req, res) => {
     });
 };
 
-exports.signout = (req, res) => {
+const signout = (req, res) => {
     res.clearCookie('t');
     return res.json({ message: 'Signout success!' });
 };
 
-exports.requireSignin = expressJwt({
+const requireSignin = expressJwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'auth'
 });
 
-exports.forgotPassword = (req, res) => {
+const forgotPassword = (req, res) => {
     if (!req.body) return res.status(400).json({ message: 'No request body' });
     if (!req.body.email) return res.status(400).json({ message: 'No Email in request body' });
 
@@ -104,7 +104,7 @@ exports.forgotPassword = (req, res) => {
 // if the user's resetPasswordLink(token) matches the incoming req.body.resetPasswordLink(token)
 // then we got the right user
 
-exports.resetPassword = (req, res) => {
+const resetPassword = (req, res) => {
     const { resetPasswordLink, newPassword } = req.body;
 
     User.findOne({ resetPasswordLink }, (err, user) => {
@@ -137,7 +137,7 @@ exports.resetPassword = (req, res) => {
 
 const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 
-exports.socialLogin = async (req, res) => {
+const socialLogin = async (req, res) => {
     const idToken = req.body.tokenId;
     const ticket = await client.verifyIdToken({ idToken, audience: process.env.REACT_APP_GOOGLE_CLIENT_ID });
     // console.log('ticket', ticket);
@@ -177,34 +177,11 @@ exports.socialLogin = async (req, res) => {
     }
 };
 
-// exports.socialLogin = (req, res) => {
-//     console.log('social login req.body', req.body);
 
-// // try signup by finding user with req.email
-// let user = User.findOne({ email: req.body.email }, (err, user) => {
-//     if (err || !user) {
-//         // create a new user and login
-//         user = new User(req.body);
-//         req.profile = user;
-//         user.save();
-//         // generate a token with user id and secret
-//         const token = jwt.sign({ _id: user._id, iss: process.env.APP_NAME }, process.env.JWT_SECRET);
-//         res.cookie('t', token, { expire: new Date() + 9999 });
-//         // return response with user and token to frontend client
-//         const { _id, name, email } = user;
-//         return res.json({ token, user: { _id, name, email } });
-//     } else {
-//         // update existing user with new social info and login
-//         req.profile = user;
-//         user = _.extend(user, req.body);
-//         user.updated = Date.now();
-//         user.save();
-//         // generate a token with user id and secret
-//         const token = jwt.sign({ _id: user._id, iss: process.env.APP_NAME }, process.env.JWT_SECRET);
-//         res.cookie('t', token, { expire: new Date() + 9999 });
-//         // return response with user and token to frontend client
-//         const { _id, name, email } = user;
-//         return res.json({ token, user: { _id, name, email } });
-//     }
-// });
-// };
+exports.signup = signup
+exports.signin = signin
+exports.signout = signout
+exports.requireSignin = requireSignin
+exports.forgotPassword = forgotPassword
+exports.resetPassword = resetPassword
+exports.socialLogin = socialLogin
