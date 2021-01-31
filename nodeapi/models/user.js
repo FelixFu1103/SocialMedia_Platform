@@ -8,16 +8,16 @@ const userSchema = new mongoose.Schema({
     name: {
         type: String,
         trim: true,
-        required: true
+        required: [true, 'User name is required!']
     },
     email: {
         type: String,
         trim: true,
-        required: true
+        required: [true, 'Email is required!']
     },
     hashed_password: {
         type: String,
-        required: true
+        required: [true, 'Password is required!']
     },
     salt: String,
     created: {

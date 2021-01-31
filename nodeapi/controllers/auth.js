@@ -38,7 +38,7 @@ const signin = (req, res) => {
         const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET);
         // persist the token as 't' in cookie with expiry date
         res.cookie('t', token, { expire: new Date() + 9999 });
-        // retrun response with user and token to frontend client
+        // return response with user and token to frontend client
         const { _id, name, email, role } = user;
         return res.json({ token, user: { _id, email, name, role } });
     });
@@ -55,8 +55,8 @@ const requireSignin = expressJwt({
 });
 
 const forgotPassword = (req, res) => {
-    if (!req.body) return res.status(400).json({ message: 'No request body' });
-    if (!req.body.email) return res.status(400).json({ message: 'No Email in request body' });
+    if (!req.body) return res.status(400).json({ message: 'Body is required!' });
+    if (!req.body.email) return res.status(400).json({ message: 'Email is required!' });
 
     console.log('forgot password finding user with that email');
     const { email } = req.body;

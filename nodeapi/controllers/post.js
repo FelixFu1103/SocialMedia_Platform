@@ -21,6 +21,7 @@ const postById = (req, res, next, id) => {
 };
 
 // with pagination
+// api only
 const getPosts = async (req, res) => {
     // get current page from req.query or use default value of 1
     const currentPage = req.query.page || 1;
@@ -109,20 +110,6 @@ const isPoster = (req, res, next) => {
     }
     next();
 };
-
-// exports.updatePost = (req, res, next) => {
-//     let post = req.post;
-//     post = _.extend(post, req.body);
-//     post.updated = Date.now();
-//     post.save(err => {
-//         if (err) {
-//             return res.status(400).json({
-//                 error: err
-//             });
-//         }
-//         res.json(post);
-//     });
-// };
 
 const updatePost = (req, res, next) => {
     let form = new formidable.IncomingForm();

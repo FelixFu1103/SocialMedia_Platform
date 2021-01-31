@@ -4,11 +4,11 @@ const { ObjectId } = mongoose.Schema;
 const postSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true
+        required: [true, 'Title is required!']
     },
     body: {
         type: String,
-        required: true
+        required: [true, 'Body is required!']
     },
     photo: {
         data: Buffer,
