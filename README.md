@@ -1,1 +1,1 @@
-## SocialMedia_Platform
+## SocialMedia Platform
