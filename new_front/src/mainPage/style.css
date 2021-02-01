@@ -1,0 +1,22 @@
+.login-form {
+  min-width: 300px;
+  margin-top: 200px;
+  margin-left: 800px
+}
+.login-form-forgot {
+  float: right;
+}
+.ant-col-rtl .login-form-forgot {
+  float: left;
+}
+.login-form-button {
+  width: 100%;
+}
+.ant-btn {
+  margin-bottom: 20px;
+}
+.newPostForm {
+  min-width: 500px;
+  line-height: 2px;
+  font-weight: bold;
+}
