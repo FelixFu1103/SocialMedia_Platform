@@ -2,6 +2,8 @@ const _ = require('lodash');
 const User = require('../models/user');
 const formidable = require('formidable');
 const fs = require('fs');
+const jaccard = require('jaccard');
+const Heap = require('heap');
 
 const userById = (req, res, next, id) => {
     User.findById(id)
@@ -108,15 +110,17 @@ const recommend = (req, res) => {
         return b.jindex - a.jindex;
     });
 
+    console.log("before query");
 
     User.find({_id: {$ne: req.profile._id}},(err, users) => {
         if (err) {
+            console.log(" recommend function error");
             return res.status(400).json({
                 error: err
             });
         }
         
-        console.log(users);
+        console.log("user >>>", users);
         users.forEach(function (value) {
             console.log("userId >>",typeof (value._id));
             console.log("req.profile._id >>> " , typeof(req.profile._id));
