@@ -2,6 +2,8 @@ const _ = require('lodash');
 const User = require('../models/user');
 const formidable = require('formidable');
 const fs = require('fs');
+const jaccard = require('jaccard');
+const Heap = require('heap');
 
 const userById = (req, res, next, id) => {
     User.findById(id)
@@ -92,6 +94,60 @@ const updateUser = (req, res, next) => {
     });
 };
 
+
+
+const recommend = (req, res) => {
+    //  
+    var userInterest = new Array();
+
+
+    req.profile.interests.forEach(function (value) {
+        console.log("value >>>> ", value);
+        userInterest.push(value.toString());
+    });  
+
+    var heap = new Heap(function(a,b) {
+        return b.jindex - a.jindex;
+    });
+
+    console.log("before query");
+
+    User.find({_id: {$ne: req.profile._id}},(err, users) => {
+        if (err) {
+            console.log(" recommend function error");
+            return res.status(400).json({
+                error: err
+            });
+        }
+        
+        console.log("user >>>", users);
+        users.forEach(function (value) {
+            console.log("userId >>",typeof (value._id));
+            console.log("req.profile._id >>> " , typeof(req.profile._id));
+            // if (value._id.equals(req.profile._id)) continue;
+
+            var interestOfuser = new Array();
+            value.interests.forEach(function (oneitem){
+                interestOfuser.push(oneitem.toString());
+            })
+
+            heap.push({ "userId" : value._id , "jindex" : jaccard.index(userInterest,interestOfuser)});
+        }) 
+        console.log("heap top >>> ", heap.peek());
+        res.json(heap.peek());
+    }).select('_id interests');
+}
+
+
+const editInterests = (req, res) => {
+    req.profile.hashed_password = undefined;
+    req.profile.salt = undefined;
+    return res.json(req.profile);
+};
+
+
+
+
 const userPhoto = (req, res, next) => {
     if (req.profile.photo.data) {
         res.set(('Content-Type', req.profile.photo.contentType));
@@ -164,6 +220,8 @@ const removeFollower = (req, res) => {
         });
 };
 
+
+
 const findPeople = (req, res) => {
     let following = req.profile.following;
     following.push(req.profile._id);
@@ -189,3 +247,5 @@ exports.updateUser = updateUser
 exports.getUser = getUser
 exports.hasAuthorization = hasAuthorization
 exports.allUsers = allUsers
+exports.recommend = recommend
+exports.editInterests = editInterests

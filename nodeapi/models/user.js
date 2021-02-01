@@ -42,7 +42,8 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         default: "subscriber"
-    }
+    },
+    interests: [{type: ObjectId, ref: "Interest"}]
 });
 
 /**
