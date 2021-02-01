@@ -40,13 +40,14 @@ url: http://localhost:8080/api/signup
   }
  ```
 - signin
+  url: http://localhost:8080/api/signin
   Post:
   ```
   {  
    "email": "yaotest@gmail.com",
   "password": "yaotest123"
   }
-```
+  ```
 - add interests on the site
   url : http://localhost:8080/api/interests
   post :
@@ -54,7 +55,7 @@ url: http://localhost:8080/api/signup
   {
   "title" : "movie"
   }
-```
+  ```
 - add interests to a user (need signin ,put the token in header)
   url : http://localhost:8080/api/interests
   put:
