@@ -24,8 +24,11 @@ npm start
 follow README in react-front
 
 ### added backend query for recommendation system.
-// install package , npm i jaccard ; npm i heap (for function of friends recommendation)
-
+// install 2 packages first
+```
+npm i jaccard 
+npm i heap 
+```
 - signup
 url: http://localhost:8080/api/signup
   post:
