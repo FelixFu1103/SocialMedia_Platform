@@ -26,16 +26,23 @@ follow README in react-front
 ## recommendation
 
 ### backend query
+
 url: http://localhost:8080/api/signup
 
 - signup
+  post:
+  {  
+   "name" : "yaotest",
+  "email": "yaotest@gmail.com",
+  "password": "yaotest123"
+  }
 
-{   
-    "name" : "yaotest",
-    "email": "yaotest@gmail.com",
-    "password": "yaotest123"
-}
-
+- signin
+  Post:
+  {  
+   "email": "yaotest@gmail.com",
+  "password": "yaotest123"
+  }
 
 - add interests on the site
   url : http://localhost:8080/api/interests
