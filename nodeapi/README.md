@@ -24,58 +24,62 @@ npm start
 follow README in react-front
 
 ### added backend query for recommendation system.
-// install 2 packages first
+
+> install 2 packages first
+
 ```
-npm i jaccard 
-npm i heap 
+npm i jaccard
+npm i heap
 ```
+
 - signup
-url: http://localhost:8080/api/signup
-  post:
-  ```
-  {  
-   "name" : "yaotest",
+
+> Post http://localhost:8080/api/signup
+
+```json
+{
+  "name": "yaotest",
   "email": "yaotest@gmail.com",
   "password": "yaotest123"
-  }
- ```
- 
+}
+```
+
 - signin
-url: http://localhost:8080/api/signin
-Post:
-  ```
-  {  
-   "email": "yaotest@gmail.com",
+  > Post http://localhost:8080/api/signin
+
+```json
+{
+  "email": "yaotest@gmail.com",
   "password": "yaotest123"
-  }
-  ```
-  
+}
+```
+
 - add interests on the site
-url : http://localhost:8080/api/interests
-post :
-  ```
-  {
-  "title" : "movie"
-  }
-  ```
+  > Post http://localhost:8080/api/interests
+
+```json
+{
+  "title": "movie"
+}
+```
+
 - add interests to a user (need signin ,put the token in header)
-url : http://localhost:8080/api/interests
-put:
-  ```
-  {
-  "userId" : "600663b238348a4de0e3479c",
-  "interests" : ["60048f9f79688a173976368d","60048fce79688a173976368e" ]
-  }
-  ```
+  > Put http://localhost:8080/api/interests
+
+```json
+{
+  "userId": "600663b238348a4de0e3479c",
+  "interests": ["60048f9f79688a173976368d", "60048fce79688a173976368e"]
+}
+```
 
 - get profile of current user (need signin)
-url : http://localhost:8080/api/user/6004ad916370d81ad58ee23d
-get
+
+  > Get http://localhost:8080/api/user/6004ad916370d81ad58ee23d
 
 - friend recommend (need sign in ,put the token in header)
-url: http://localhost:8080/api/user/:userId/recommendation
-get:
+
+  > Get http://localhost:8080/api/user/:userId/recommendation
 
 - signout
-url: http://localhost:8080/api/signout
-get;
+  > Get http://localhost:8080/api/signout
