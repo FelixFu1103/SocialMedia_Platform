@@ -9,6 +9,8 @@ const fs = require('fs');
 const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config();
+const http = require('http');
+const server = http.createServer(app);
 
 // db
 mongoose.connect(process.env.MONGO_URI, {
@@ -57,3 +59,23 @@ const port = process.env.PORT || 8080;
 app.listen(port, () => {
     console.log(`A Node Js API is listening on port: ${port}`);
 });
+
+//websocket
+const WebSocketServer = require('websocket').server;
+const ws =  new WebSocketServer({httpServer:server});
+//connect
+ws.on('request',(req)=>{
+    const userInfo = req.resource.replace('/','')
+    const connection = req.accept(null,req.origin)
+    connection.on('message',function(msg){
+        let data = JSON.parse(msg.utf8Data)
+        ws.connections.map((item,index)=>{
+            item.send(JSON.stringify(data))
+        })
+    })
+
+    //break
+    connection.on('close',function(reasonCode,description){
+        // console.log(`\x1B[31m${'用户'}已退出连接>>>>>>`);
+    })
+})
