@@ -76,6 +76,6 @@ ws.on('request',(req)=>{
 
     //break
     connection.on('close',function(reasonCode,description){
-        // console.log(`\x1B[31m${'用户'}已退出连接>>>>>>`);
+        // console.log(`\x1B[31m${'user'}disconnected>>>>>>`);
     })
 })
