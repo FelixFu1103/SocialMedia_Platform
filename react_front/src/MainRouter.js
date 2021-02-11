@@ -15,7 +15,7 @@ import PrivateRoute from "./auth/PrivateRoute";
 import ForgotPassword from "./user/ForgotPassword";
 import ResetPassword from "./user/ResetPassword";
 import Admin from "./admin/Admin";
-
+import Chat from './chat'
 const MainRouter = () => (
     <div>
         <Menu />
@@ -45,6 +45,7 @@ const MainRouter = () => (
             />
             <PrivateRoute exact path="/findpeople" component={FindPeople} />
             <PrivateRoute exact path="/user/:userId" component={Profile} />
+            <Route exact path="/chat" component={Chat} />
         </Switch>
     </div>
 );
