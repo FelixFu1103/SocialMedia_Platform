@@ -11,11 +11,12 @@ class FriendsComponent extends React.Component {
     constructor() {
         super();
         this.state = {
-          user: { following: [], followers: [] },
+          user: { following: [], followers: [], interests: [] },
           redirectToSignin: false,
           following: false,
           error: "",
-          posts: []
+          posts: [],
+
         };
     }
     checkFollow = user => {
@@ -43,11 +44,12 @@ class FriendsComponent extends React.Component {
       init = userId => {
         const token = isAuthenticated().token;
         read(userId, token).then(data => {
+          console.log("data >>> ", data);
           if (data.error) {
             this.setState({ redirectToSignin: true });
           } else {
             let following = this.checkFollow(data);
-            this.setState({ user: data, following });
+            this.setState({ user: data});
             this.loadPosts(data._id);
           }
         });
@@ -75,19 +77,31 @@ class FriendsComponent extends React.Component {
       }
     
     render(){
-        const {user} = this.state;
-        console.log(user)
+        // const interests = this.state.user.interests;
+        const {user} = this.state;     
+        // const interests = user.interests;   
+        const elements = ['one', 'two', 'three'];
+        console.log(user);
+        // console.log(interests);
         return (
-            <div className="site-card-border-less-wrapper" style={{marginLeft:50, marginTop:100}}>
-                <Card title={user.name} bordered={false} style={{ width: 800 }}>
-                    <p>Email: {user.email}</p>
-                    <p>{`Joined ${new Date(user.created).toDateString()}`}</p>
-                    <p>Following: {user.following.length}</p>
-                    <p>Follower: {user.followers.length}</p>
-                </Card>
-                <Button onClick={() => signout(()=>history.push('/'))}>Sign out</Button>
-            </div>
+            <ul>
+                {user.interests.map((value) => {
+                    return <li> {value}</li>
+                })}
+            </ul>
         )
+        
+
+        // return (
+        //     <div className="site-card-border-less-wrapper" style={{marginLeft:50, marginTop:100}}>
+        //         <Card title={user.name} bordered={false} style={{ width: 800 }}>
+        //             <p>{`Joined ${new Date(user.created).toDateString()}`}</p>
+        //             <p>Following: {user.following.length}</p>
+        //             <p>Follower: {user.followers.length}</p>
+        //         </Card>
+        //         <Button onClick={() => signout(()=>history.push('/'))}>Sign out</Button>
+        //     </div>
+        // )
     }
 }
 
