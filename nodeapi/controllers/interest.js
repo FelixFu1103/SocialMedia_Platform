@@ -5,7 +5,6 @@ const { UserRefreshClient } = require('google-auth-library');
 
 
 const createInterest = async (req, res) => {
-    console.log("createInterest");
     const interestExists = await Interest.findOne({ title: req.body.title });
     if (interestExists)
         return res.status(403).json({
@@ -33,7 +32,14 @@ const userInterests = (req, res) => {
     console.log(req.profile);
     req.profile.hashed_password = undefined;
     req.profile.salt = undefined;
-    return res.json(req.profile.interests);
+
+    Interest.find({_id : { $in : ["60177374ce8cc82a90457f02", "60177384ce8cc82a90457f04"]} }, (err, result) => {
+        if (err) {
+            return res.status(400).json({ error: err });
+        } 
+        console.log("result >>>" , result[0].title);
+        return res.json(result);
+    })
 };
 
 // assign interests

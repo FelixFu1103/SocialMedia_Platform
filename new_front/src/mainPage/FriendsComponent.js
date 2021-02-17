@@ -6,6 +6,7 @@ import DefaultProfile from "../images/avatar.jpg";
 import { listByUser } from '../helper/posts';
 import { Card, Button } from 'antd';
 import history from './History';
+import { readInterests } from '../helper/friends';
 
 class FriendsComponent extends React.Component {
     constructor() {
@@ -14,6 +15,7 @@ class FriendsComponent extends React.Component {
           user: { following: [], followers: [], interests: [] },
           redirectToSignin: false,
           following: false,
+          interests: [],
           error: "",
           posts: [],
 
@@ -53,6 +55,16 @@ class FriendsComponent extends React.Component {
             this.loadPosts(data._id);
           }
         });
+
+        readInterests(userId).then(data => {
+            if (data.error) {
+              this.setState({ redirectToSignin: true });
+            } else {
+                this.setState({interests: data});
+                console.log("readInterests work");
+            }
+          });
+
       };
     
       loadPosts = userId => {
@@ -79,14 +91,15 @@ class FriendsComponent extends React.Component {
     render(){
         // const interests = this.state.user.interests;
         const {user} = this.state;     
+        const {interests} = this.state;
         // const interests = user.interests;   
         const elements = ['one', 'two', 'three'];
         console.log(user);
-        // console.log(interests);
+        console.log("interests >>>", interests);
         return (
             <ul>
-                {user.interests.map((value) => {
-                    return <li> {value}</li>
+                {interests.map((value, index) => {
+                    return <li> {value.title}</li>
                 })}
             </ul>
         )
