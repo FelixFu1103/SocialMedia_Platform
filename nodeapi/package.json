@@ -24,6 +24,8 @@
     "express-validator": "^5.3.1",
     "formidable": "^1.2.1",
     "google-auth-library": "^4.2.4",
+    "heap": "^0.2.6",
+    "jaccard": "^0.4.0",
     "jsonwebtoken": "^8.4.0",
     "lodash": "^4.17.11",
     "mongoose": "^5.4.3",
@@ -31,6 +33,7 @@
     "morgan": "^1.9.1",
     "nodemailer": "^5.1.1",
     "nodemon": "^1.18.9",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "websocket": "^1.0.33"
   }
 }

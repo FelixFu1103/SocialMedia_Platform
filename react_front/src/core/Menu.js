@@ -81,6 +81,11 @@ const Menu = ({ history }) => (
                             Sign Out
                         </span>
                     </li>
+                    <li className="nav-item">
+                        <Link to={`/chat`} style={isActive(history, `/chat`)} className="nav-link">
+                            Chat
+                        </Link>
+                    </li>
                 </React.Fragment>
             )}
         </ul>
