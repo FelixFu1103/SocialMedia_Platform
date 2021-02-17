@@ -33,11 +33,10 @@ const userInterests = (req, res) => {
     req.profile.hashed_password = undefined;
     req.profile.salt = undefined;
 
-    Interest.find({_id : { $in : ["60177374ce8cc82a90457f02", "60177384ce8cc82a90457f04"]} }, (err, result) => {
+    Interest.find({_id : { $in : req.profile.interests}}, (err, result) => {
         if (err) {
             return res.status(400).json({ error: err });
         } 
-        console.log("result >>>" , result[0].title);
         return res.json(result);
     })
 };
@@ -54,7 +53,6 @@ const assignInterest = (req, res, next) => {
     });
 
 };
-
 
 exports.createInterest = createInterest
 exports.allInterests = allInterests
