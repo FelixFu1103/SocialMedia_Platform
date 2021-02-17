@@ -28,7 +28,8 @@ const MainRouter = () => (
                 path="/reset-password/:resetPasswordToken"
                 component={ResetPassword}
             />
-            <PrivateRoute exact path="/post/create" component={NewPost} />
+            {/* //mark */}
+            <PrivateRoute exact path="/post/create" component={NewPost} /> 
             <Route exact path="/post/:postId" component={SinglePost} />
             <PrivateRoute
                 exact
