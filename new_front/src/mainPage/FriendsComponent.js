@@ -4,9 +4,9 @@ import {withRouter } from 'react-router-dom';
 import { read } from '../helper/user';
 import DefaultProfile from "../images/avatar.jpg";
 import { listByUser } from '../helper/posts';
-import { Card, Button } from 'antd';
+import { Card, Button, Checkbox } from 'antd';
 import history from './History';
-import { readInterests } from '../helper/friends';
+import { readInterests, recommendfriend } from '../helper/friends';
 
 class FriendsComponent extends React.Component {
     constructor() {
@@ -18,7 +18,7 @@ class FriendsComponent extends React.Component {
           interests: [],
           error: "",
           posts: [],
-
+          recommendfriend: ""
         };
     }
     checkFollow = user => {
@@ -64,6 +64,17 @@ class FriendsComponent extends React.Component {
                 console.log("readInterests work");
             }
           });
+        
+        recommendfriend(userId, token).then(data => {
+            if (data.error) {
+              console.log("Recommending friends failed");
+            } else {
+              this.setState({recommendfriend: data});
+              console.log("recommendfriend work");
+          }
+
+
+        } )
 
       };
     
@@ -92,29 +103,32 @@ class FriendsComponent extends React.Component {
         // const interests = this.state.user.interests;
         const {user} = this.state;     
         const {interests} = this.state;
+        const {recommendfriend} = this.state;
         // const interests = user.interests;   
-        const elements = ['one', 'two', 'three'];
-        console.log(user);
-        console.log("interests >>>", interests);
         return (
-            <ul>
-                {interests.map((value, index) => {
-                    return <li> {value.title}</li>
-                })}
+            <div vertical layout>
+              <div> 
+              <h1>Your Interests</h1>
+              <ul>
+                  {interests.map((value, index) => {
+                      return <li> {value.title}</li>
+                  })}
             </ul>
+            </div>
+            <div> 
+              <h1>Recommending Friends</h1>
+              <ul>
+                {recommendfriend.name}
+              </ul>
+            </div>
+            
+            <Checkbox>checkbox</Checkbox>
+
+           </div>
+
         )
         
 
-        // return (
-        //     <div className="site-card-border-less-wrapper" style={{marginLeft:50, marginTop:100}}>
-        //         <Card title={user.name} bordered={false} style={{ width: 800 }}>
-        //             <p>{`Joined ${new Date(user.created).toDateString()}`}</p>
-        //             <p>Following: {user.following.length}</p>
-        //             <p>Follower: {user.followers.length}</p>
-        //         </Card>
-        //         <Button onClick={() => signout(()=>history.push('/'))}>Sign out</Button>
-        //     </div>
-        // )
     }
 }
 

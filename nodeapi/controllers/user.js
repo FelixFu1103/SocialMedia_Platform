@@ -97,21 +97,14 @@ const updateUser = (req, res, next) => {
 
 
 const recommend = (req, res) => {
-    //  
     var userInterest = new Array();
-
-
     req.profile.interests.forEach(function (value) {
         console.log("value >>>> ", value);
         userInterest.push(value.toString());
     });  
-
     var heap = new Heap(function(a,b) {
         return b.jindex - a.jindex;
     });
-
-    console.log("before query");
-
     User.find({_id: {$ne: req.profile._id}},(err, users) => {
         if (err) {
             console.log(" recommend function error");
@@ -122,7 +115,7 @@ const recommend = (req, res) => {
         
         console.log("user >>>", users);
         users.forEach(function (value) {
-            console.log("userId >>",typeof (value._id));
+            console.log("userName >>",typeof (value.name));
             console.log("req.profile._id >>> " , typeof(req.profile._id));
             // if (value._id.equals(req.profile._id)) continue;
 
@@ -130,12 +123,12 @@ const recommend = (req, res) => {
             value.interests.forEach(function (oneitem){
                 interestOfuser.push(oneitem.toString());
             })
-
-            heap.push({ "userId" : value._id , "jindex" : jaccard.index(userInterest,interestOfuser)});
+            heap.push({ "name" : value.name , "jindex" : jaccard.index(userInterest,interestOfuser)});
         }) 
         console.log("heap top >>> ", heap.peek());
+
         res.json(heap.peek());
-    }).select('_id interests');
+    }).select('_id name interests');
 }
 
 
