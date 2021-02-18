@@ -6,43 +6,28 @@ import DefaultProfile from "../images/avatar.jpg";
 import { listByUser } from '../helper/posts';
 import { Card, Button, Checkbox } from 'antd';
 import history from './History';
-import { readInterests, recommendfriend } from '../helper/friends';
+import { recommendfriend } from '../helper/friends';
+import { getAllInterests, readInterests, assignInterest } from '../helper/interest';
+
 
 class FriendsComponent extends React.Component {
     constructor() {
         super();
         this.state = {
-          user: { following: [], followers: [], interests: [] },
+          user: { following: [], followers: [] },
           redirectToSignin: false,
           following: false,
           interests: [],
+          allInterests: [],
+          changedInterests: [],
           error: "",
           posts: [],
-          recommendfriend: ""
+          recommendfriend: "",
         };
+        // this.onChange = this.onChange.bind(this);
+
     }
-    checkFollow = user => {
-        const jwt = isAuthenticated();
-        const match = user.followers.find(follower => {
-          // one id has many other ids (followers) and vice versa
-          return follower._id === jwt.user._id;
-        });
-        return match;
-      };
-    
-      clickFollowButton = callApi => {
-        const userId = isAuthenticated().user._id;
-        const token = isAuthenticated().token;
-    
-        callApi(userId, token, this.state.user._id).then(data => {
-          if (data.error) {
-            this.setState({ error: data.error });
-          } else {
-            this.setState({ user: data, following: !this.state.following });
-          }
-        });
-      };
-    
+
       init = userId => {
         const token = isAuthenticated().token;
         read(userId, token).then(data => {
@@ -50,9 +35,7 @@ class FriendsComponent extends React.Component {
           if (data.error) {
             this.setState({ redirectToSignin: true });
           } else {
-            let following = this.checkFollow(data);
             this.setState({ user: data});
-            this.loadPosts(data._id);
           }
         });
 
@@ -69,26 +52,46 @@ class FriendsComponent extends React.Component {
             if (data.error) {
               console.log("Recommending friends failed");
             } else {
-              this.setState({recommendfriend: data});
-              console.log("recommendfriend work");
+              if (data.jindex > 0.2) {
+                this.setState({recommendfriend: data});
+                console.log("recommendfriend work");
+              } else {
+                console.log("No friends for recommendation");
+              }
           }
-
-
         } )
 
-      };
-    
-      loadPosts = userId => {
-        const token = isAuthenticated().token;
-        listByUser(userId, token).then(data => {
+        getAllInterests().then(data => {
           if (data.error) {
-            console.log(data.error);
+            console.log("Get all interests failed");
           } else {
-            this.setState({ posts: data });
+            this.setState({allInterests: data});
+            console.log("recommendfriend work");
           }
-        });
+        } )
       };
     
+
+    updateInterests = () => {
+      const jwt = isAuthenticated();
+      const token = jwt.token;
+      const userId = jwt.user._id;
+      const userInterests = this.state.changedInterests;
+      assignInterest(userId, token, userInterests).then(data => {
+        if (data.error) {
+          console.log("Assign interest failed");
+        } else {
+          console.log("Assign interest work");
+        }
+        window.location.reload();
+      })
+    };
+
+
+    onChange = e => {
+      this.setState({changedInterests : e})
+    };
+
       componentDidMount() {
         const userId = isAuthenticated().user._id;
         this.init(userId);
@@ -101,34 +104,35 @@ class FriendsComponent extends React.Component {
     
     render(){
         // const interests = this.state.user.interests;
-        const {user} = this.state;     
-        const {interests} = this.state;
-        const {recommendfriend} = this.state;
+        const {user, interests, recommendfriend, allInterests} = this.state;     
+
         // const interests = user.interests;   
         return (
-            <div vertical layout>
+            <div style={{ marginLeft:20, marginTop:20}}  vertical layout>
               <div> 
-              <h1>Your Interests</h1>
-              <ul>
-                  {interests.map((value, index) => {
-                      return <li> {value.title}</li>
-                  })}
-            </ul>
-            </div>
+                <h3>Your Interests</h3>
+                <ul>
+                    {interests.map((value, index) => {
+                        return <li> {value.title}</li>
+                    })}
+                </ul>
+              </div>
             <div> 
-              <h1>Recommending Friends</h1>
+              <h3>Recommending Friends</h3>
               <ul>
                 {recommendfriend.name}
               </ul>
             </div>
-            
-            <Checkbox>checkbox</Checkbox>
+            <div>
+              <h3>Edit Your Interests</h3>
+              <Checkbox.Group style={{width: "500px"}} options={allInterests.map(column => ({label:column.title, value: column._id}))}  onChange={this.onChange}/>
+            </div>
 
-           </div>
-
+            <button  onClick={this.updateInterests} className="btn  btn-primary">
+                Update interests
+            </button>
+          </div>
         )
-        
-
     }
 }
 

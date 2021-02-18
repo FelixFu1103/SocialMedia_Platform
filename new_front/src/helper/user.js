@@ -115,3 +115,4 @@ export const findPeople = (userId, token) => {
         })
         .catch(err => console.log(err));
 };
+
