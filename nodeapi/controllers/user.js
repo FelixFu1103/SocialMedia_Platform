@@ -124,7 +124,7 @@ const recommend = (req, res) => {
                 interestOfuser.push(oneitem.toString());
             })
 
-            heap.push({ "userId" : value._id , "jindex" : jaccard.index(userInterest,interestOfuser)});
+            heap.push({ "name" : value.name , "jindex" : jaccard.index(userInterest,interestOfuser)});
         })
         console.log("heap top >>> ", heap.peek());
 
