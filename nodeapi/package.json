@@ -11,7 +11,7 @@
     "node",
     "api"
   ],
-  "author": "Ryan Dhungel",
+  "author": "Hao Fu",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",

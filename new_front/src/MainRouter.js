@@ -3,6 +3,7 @@ import { Route} from "react-router-dom";
 import MenuTab from './mainPage/MenuTab';
 import ProfileComponent from './mainPage/ProfileComponent';
 import UsersComponent from './mainPage/UsersComponent';
+import FriendsComponent from './mainPage/FriendsComponent';
 import PostsComponent from './mainPage/PostsComponent';
 import NewPostComponent from './mainPage/NewPostComponent';
 import {Row} from 'antd';
@@ -15,6 +16,7 @@ const MainRouter = () => (
             <Route exact path="/users" component={UsersComponent} />  
             <Route exact path="/recent_posts" component={PostsComponent} />  
             <Route exact path="/new_post" component={NewPostComponent} /> 
+            <Route exact path="/find_friends" component={FriendsComponent} /> 
         </Row>
           
     </Route>
