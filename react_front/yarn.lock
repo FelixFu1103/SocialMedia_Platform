@@ -3200,6 +3200,11 @@
     "jsbn" "~0.1.0"
     "safer-buffer" "^2.1.0"
 
+"eccjs@^0.3.1":
+  "integrity" "sha1-vDpiqzS2Xw6jFQEpit4c9lQZh1w="
+  "resolved" "https://registry.npmjs.org/eccjs/-/eccjs-0.3.1.tgz"
+  "version" "0.3.1"
+
 "ee-first@1.1.1":
   "integrity" "sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0="
   "resolved" "https://registry.npmjs.org/ee-first/-/ee-first-1.1.1.tgz"
