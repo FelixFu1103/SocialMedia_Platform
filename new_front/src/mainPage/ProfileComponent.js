@@ -19,64 +19,63 @@ class ProfileComponent extends React.Component {
         };
     }
     checkFollow = user => {
-        const jwt = isAuthenticated();
-        const match = user.followers.find(follower => {
-          // one id has many other ids (followers) and vice versa
-          return follower._id === jwt.user._id;
-        });
-        return match;
-      };
-    
-      clickFollowButton = callApi => {
-        const userId = isAuthenticated().user._id;
-        const token = isAuthenticated().token;
-    
-        callApi(userId, token, this.state.user._id).then(data => {
-          if (data.error) {
-            this.setState({ error: data.error });
-          } else {
-            this.setState({ user: data, following: !this.state.following });
-          }
-        });
-      };
-    
-      init = userId => {
-        const token = isAuthenticated().token;
-        read(userId, token).then(data => {
-          if (data.error) {
-            this.setState({ redirectToSignin: true });
-          } else {
-            let following = this.checkFollow(data);
-            this.setState({ user: data, following });
-            this.loadPosts(data._id);
-          }
-        });
-      };
-    
-      loadPosts = userId => {
-        const token = isAuthenticated().token;
-        listByUser(userId, token).then(data => {
-          if (data.error) {
-            console.log(data.error);
-          } else {
-            this.setState({ posts: data });
-          }
-        });
-      };
-    
-      componentDidMount() {
-        const userId = isAuthenticated().user._id;
-        this.init(userId);
-      }
-    
-      componentWillReceiveProps(props) {
-        const userId = isAuthenticated().user._id;
-        this.init(userId);
-      }
-    
+      const jwt = isAuthenticated();
+      const match = user.followers.find(follower => {
+        // one id has many other ids (followers) and vice versa
+        return follower._id === jwt.user._id;
+      });
+      return match;
+    };
+  
+    clickFollowButton = callApi => {
+      const userId = isAuthenticated().user._id;
+      const token = isAuthenticated().token;
+  
+      callApi(userId, token, this.state.user._id).then(data => {
+        if (data.error) {
+          this.setState({ error: data.error });
+        } else {
+          this.setState({ user: data, following: !this.state.following });
+        }
+      });
+    };
+  
+    init = userId => {
+      const token = isAuthenticated().token;
+      read(userId, token).then(data => {
+        if (data.error) {
+          this.setState({ redirectToSignin: true });
+        } else {
+          let following = this.checkFollow(data);
+          this.setState({ user: data, following });
+          this.loadPosts(data._id);
+        }
+      });
+    };
+  
+    loadPosts = userId => {
+      const token = isAuthenticated().token;
+      listByUser(userId, token).then(data => {
+        if (data.error) {
+          console.log(data.error);
+        } else {
+          this.setState({ posts: data });
+        }
+      });
+    };
+  
+    componentDidMount() {
+      const userId = this.props.match.params.userId;
+      this.init(userId);
+    }
+  
+    componentWillReceiveProps(props) {
+      const userId = props.match.params.userId;
+      this.init(userId);
+    }
+  
     render(){
         const {user} = this.state;
-        console.log(user)
         return (
             <div className="site-card-border-less-wrapper" style={{marginLeft:50, marginTop:100}}>
                 <Card title={user.name} bordered={false} style={{ width: 800 }}>

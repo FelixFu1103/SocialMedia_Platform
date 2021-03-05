@@ -1,6 +1,7 @@
 import React from 'react';
 import { Menu, Button } from 'antd';
 import { Link} from 'react-router-dom';
+import {isAuthenticated} from '../helper';
 import {AppstoreOutlined,MenuUnfoldOutlined,MenuFoldOutlined,PieChartOutlined,DesktopOutlined,ContainerOutlined,MailOutlined,} from '@ant-design/icons';
 
 const { SubMenu } = Menu;
@@ -21,22 +22,22 @@ class MenuComponent extends React.Component {
                 </Button>
                 <Menu defaultSelectedKeys={['recentPosts']} defaultOpenKeys={['posts']} mode="inline" theme="dark" inlineCollapsed={this.state.collapsed}>
                 <Menu.Item key="profile" icon={<PieChartOutlined />}>
-                    <Link to="/profile">Profile</Link>
+                    <Link to={`/profile/${isAuthenticated().user._id}`}>Profile</Link>
                 </Menu.Item>
                 <Menu.Item key="users" icon={<DesktopOutlined />}>
-                    <Link to="users">Users</Link>
+                    <Link to="/users">Users</Link>
                 </Menu.Item>
                 <Menu.Item key="friends" icon={<ContainerOutlined />}>
-                    <Link to="find_friends">Find Friends</Link>
+                    <Link to="/find_friends">Find Friends</Link>
                 </Menu.Item>
                 <SubMenu key="posts" icon={<MailOutlined />} title="Posts">
-                    <Menu.Item key="recentPosts"><Link to="recent_posts">Recent Posts</Link></Menu.Item>
-                    <Menu.Item key="newPost"><Link to="new_post">New Post</Link></Menu.Item>
+                    <Menu.Item key="recentPosts"><Link to="/recent_posts">Recent Posts</Link></Menu.Item>
+                    <Menu.Item key="newPost"><Link to="/new_post">New Post</Link></Menu.Item>
                 </SubMenu>
-                <SubMenu key="chatting" icon={<AppstoreOutlined />} title="Chatting">
-                    <Menu.Item key="no"><Link to="no_securty">No security</Link></Menu.Item>
-                    <Menu.Item key="rsa"><Link to="RSA">RSA</Link></Menu.Item>
-                    <Menu.Item key="ecc"><Link to="ECC">ECC</Link></Menu.Item>
+                <SubMenu key="chatting" icon={<AppstoreOutlined/>} title="Chatting">
+                    <Menu.Item key="no"><Link to="/no_securty">No security</Link></Menu.Item>
+                    <Menu.Item key="rsa"><Link to="/RSA">RSA</Link></Menu.Item>
+                    <Menu.Item key="ecc"><Link to="/ECC">ECC</Link></Menu.Item>
                 </SubMenu>
                 </Menu>
             </div>
