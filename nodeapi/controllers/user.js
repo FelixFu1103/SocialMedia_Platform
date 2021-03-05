@@ -21,16 +21,17 @@ const userById = (req, res, next, id) => {
         });
 };
 
+// middleware
 const hasAuthorization = (req, res, next) => {
     let sameUser = req.profile && req.auth && req.profile._id == req.auth._id;
     let adminUser = req.profile && req.auth && req.auth.role === 'admin';
 
-    const authorized = sameUser || adminUser;
+    const isAuthorized = sameUser || adminUser;
 
     // console.log("req.profile ", req.profile, " req.auth ", req.auth);
     // console.log("SAMEUSER", sameUser, "ADMINUSER", adminUser);
 
-    if (!authorized) {
+    if (!isAuthorized) {
         return res.status(403).json({
             error: 'User is not authorized to perform this action'
         });
@@ -40,23 +41,24 @@ const hasAuthorization = (req, res, next) => {
 
 const allUsers = (req, res) => {
     User.find((err, users) => {
-        if (err) {
-            return res.status(400).json({
-                error: err
-            });
-        }
-        res.json(users);
-    }).select('name email updated created role');
+            if (err) {
+                return res.status(400).json({
+                    error: err
+                });
+            }
+            res.json(users);
+        })
+        .select('name email updated created role');
 };
 
-const getUser = (req, res) => {
+const getCurrentUser = (req, res) => {
     req.profile.hashed_password = undefined;
     req.profile.salt = undefined;
     return res.json(req.profile);
 };
 
 
-
+// only update user profile photo
 const updateUser = (req, res, next) => {
     let form = new formidable.IncomingForm();
     // console.log("incoming form data: ", form);
@@ -162,8 +164,9 @@ const deleteUser = (req, res, next) => {
     });
 };
 
-// follow unfollow
+// follow unfollow they are together 
 const addFollowing = (req, res, next) => {
+    // push the clicked user to the following list
     User.findByIdAndUpdate(req.body.userId, { $push: { following: req.body.followId } }, (err, result) => {
         if (err) {
             return res.status(400).json({ error: err });
@@ -190,6 +193,7 @@ const addFollower = (req, res) => {
 
 // remove follow unfollow
 const removeFollowing = (req, res, next) => {
+    // pull: take it out 
     User.findByIdAndUpdate(req.body.userId, { $pull: { following: req.body.unfollowId } }, (err, result) => {
         if (err) {
             return res.status(400).json({ error: err });
@@ -238,7 +242,7 @@ exports.deleteUser = deleteUser
 exports.userPhoto = userPhoto
 exports.userById = userById
 exports.updateUser = updateUser
-exports.getUser = getUser
+exports.getCurrentUser = getCurrentUser
 exports.hasAuthorization = hasAuthorization
 exports.allUsers = allUsers
 exports.recommend = recommend

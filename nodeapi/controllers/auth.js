@@ -6,17 +6,18 @@ const _ = require('lodash');
 const { OAuth2Client } = require('google-auth-library');
 const { sendEmail } = require('../helpers');
 
+// sign up new user
 const signup = async (req, res) => {
-    const userExists = await User.findOne({ email: req.body.email });
-    if (userExists)
+    const hasUser = await User.findOne({ email: req.body.email });
+    if (hasUser)
         return res.status(403).json({
-            error: 'Email is taken!'
+            error: 'Email is existed!'
         });
     const user = await new User(req.body);
     await user.save();
     res.status(200).json({ message: 'Signup success! Please login.' });
 };
-
+// sign existed user in
 const signin = (req, res) => {
     // find the user based on email
     const { email, password } = req.body;
@@ -27,28 +28,30 @@ const signin = (req, res) => {
                 error: 'User with that email does not exist. Please signup.'
             });
         }
-        // if user is found make sure the email and password match
-        // create authenticate method in model and use here
+       // if user existed, check if plain text password match with encrypted password
         if (!user.authenticate(password)) {
             return res.status(401).json({
                 error: 'Email and password do not match'
             });
         }
+        // put the token as 'ck' in cookie with expiry date
+        res.cookie('ck', token, { expire: new Date() + 9999 });
+
         // generate a token with user id and secret
         const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET);
-        // persist the token as 't' in cookie with expiry date
-        res.cookie('t', token, { expire: new Date() + 9999 });
-        // return response with user and token to frontend client
-        const { _id, name, email, role } = user;
+        
+        // return back responses to front end
+        const { _id, email, name, role } = user;
         return res.json({ token, user: { _id, email, name, role } });
     });
 };
 
-const signout = (req, res) => {
-    res.clearCookie('t');
-    return res.json({ message: 'Signout success!' });
+const logout = (req, res) => {
+    res.clearCookie('ck');
+    return res.json({ message: 'Logout success!' });
 };
 
+// middleware
 const requireSignin = expressJwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'auth'
@@ -98,11 +101,6 @@ const forgotPassword = (req, res) => {
     });
 };
 
-// to allow user to reset password
-// first you will find the user in the database with user's resetPasswordLink
-// user model's resetPasswordLink's value must match the token
-// if the user's resetPasswordLink(token) matches the incoming req.body.resetPasswordLink(token)
-// then we got the right user
 
 const resetPassword = (req, res) => {
     const { resetPasswordLink, newPassword } = req.body;
@@ -180,7 +178,7 @@ const socialLogin = async (req, res) => {
 
 exports.signup = signup
 exports.signin = signin
-exports.signout = signout
+exports.logout = logout
 exports.requireSignin = requireSignin
 exports.forgotPassword = forgotPassword
 exports.resetPassword = resetPassword

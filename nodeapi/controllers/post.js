@@ -30,7 +30,6 @@ const getPosts = async (req, res) => {
     let totalItems;
 
     const posts = await Post.find()
-        // countDocuments() gives you total count of posts
         .countDocuments()
         .then(count => {
             totalItems = count;
@@ -49,7 +48,7 @@ const getPosts = async (req, res) => {
         .catch(err => console.log(err));
 };
 
-const createPost = (req, res, next) => {
+const writePost = (req, res, next) => {
     let form = new formidable.IncomingForm();
     form.keepExtensions = true;
     form.parse(req, (err, fields, files) => {
@@ -94,20 +93,21 @@ const postsByUser = (req, res) => {
         });
 };
 
-const isPoster = (req, res, next) => {
+// middleware
+const istheSamePoster = (req, res, next) => {
     let sameUser = req.post && req.auth && req.post.postedBy._id == req.auth._id;
     let adminUser = req.post && req.auth && req.auth.role === 'admin';
 
-    // console.log("req.post ", req.post, " req.auth ", req.auth);
-    // console.log("SAMEUSER: ", sameUser, " ADMINUSER: ", adminUser);
 
-    let isPoster = sameUser || adminUser;
 
-    if (!isPoster) {
+    let isAuthorized = sameUser || adminUser;
+
+    if (!isAuthorized) {
         return res.status(403).json({
-            error: 'User is not authorized'
+            error: 'User is not authorized to do the operation'
         });
     }
+    // middleware preceed to do next operation
     next();
 };
 
@@ -259,9 +259,9 @@ const updateComment = (req, res) => {
 
 exports.postById = postById
 exports.getPosts = getPosts
-exports.createPost = createPost
+exports.writePost = writePost
 exports.postsByUser = postsByUser
-exports.isPoster = isPoster
+exports.istheSamePoster = istheSamePoster
 exports.updatePost = updatePost
 exports.deletePost = deletePost
 exports.photo = photo
