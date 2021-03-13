@@ -29,7 +29,6 @@ export const getAllInterests = () => {
 
 
 export const assignInterest = (userId, token, userInterests) => {
-    console.log("assgnInt in interest.js called");
     return fetch(`${process.env.REACT_APP_API_URL}/interests`, {
         method: "PUT",
         headers: {
@@ -40,6 +39,24 @@ export const assignInterest = (userId, token, userInterests) => {
         body:  JSON.stringify(  {
             "userId" : userId,
             "interests" :userInterests
+            })
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => console.log(err));
+};
+
+
+export const addInterest = (newInterest) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/interests`, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body:  JSON.stringify(  {
+            "title" : newInterest
             })
     })
         .then(response => {

@@ -29,7 +29,6 @@ const allInterests = (req, res) => {
 };
 
 const userInterests = (req, res) => {
-    console.log(req.profile);
     req.profile.hashed_password = undefined;
     req.profile.salt = undefined;
 
