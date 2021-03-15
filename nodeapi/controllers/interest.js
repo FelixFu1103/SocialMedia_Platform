@@ -30,6 +30,7 @@ const allInterests = (req, res) => {
 
 const userInterests = (req, res) => {
     console.log(req.profile);
+    console.log("req__", req);
     req.profile.hashed_password = undefined;
     req.profile.salt = undefined;
 
@@ -37,6 +38,7 @@ const userInterests = (req, res) => {
         if (err) {
             return res.status(400).json({ error: err });
         } 
+        console.log("output: ", result);
         return res.json(result);
     })
 };
@@ -44,7 +46,9 @@ const userInterests = (req, res) => {
 // assign interests
 // the second argument of findByIdAndUpdate is the target object
 const assignInterest = (req, res, next) => {
-
+    console.log("req.body.userId: ", req.body.userId);
+    console.log("req.body: ", req.body);
+    console.log("req.body.interests: ", req.body.interests);
     User.findByIdAndUpdate(req.body.userId, { $set: { interests: req.body.interests} }, (err, result) => {
         if (err) {
             return res.status(400).json({ error: err });

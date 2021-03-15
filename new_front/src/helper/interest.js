@@ -30,20 +30,21 @@ export const getAllInterests = () => {
 
 export const assignInterest = (userId, token, userInterests) => {
     console.log("assgnInt in interest.js called");
-    return fetch(`${process.env.REACT_APP_API_URL}/interests`, {
+    return fetch(`${process.env.REACT_APP_API_URL}/interests/${userId}`, {
         method: "PUT",
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`
         },
-        body:  JSON.stringify(  {
+        body: JSON.stringify(  {
             "userId" : userId,
-            "interests" :userInterests
-            })
+            "interests" : userInterests
+        })
     })
         .then(response => {
-            return response.json();
+            //return response.json();
+            return "return";
         })
         .catch(err => console.log(err));
 };

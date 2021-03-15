@@ -1,4 +1,5 @@
 export const read = (userId, token) => {
+    console.log("inside read");
     return fetch(`${process.env.REACT_APP_API_URL}/user/${userId}`, {
         method: "GET",
         headers: {
@@ -9,6 +10,7 @@ export const read = (userId, token) => {
     })
         .then(response => {
             return response.json();
+            //return "check follow";
         })
         .catch(err => console.log(err));
 };
@@ -30,6 +32,8 @@ export const update = (userId, token, user) => {
 };
 
 export const remove = (userId, token) => {
+    // always stop here ? but it did delete the user
+
     return fetch(`${process.env.REACT_APP_API_URL}/user/${userId}`, {
         method: "DELETE",
         headers: {
@@ -39,7 +43,9 @@ export const remove = (userId, token) => {
         }
     })
         .then(response => {
+            // console.log(response.json());
             return response.json();
+            //return "deleted";
         })
         .catch(err => console.log(err));
 };

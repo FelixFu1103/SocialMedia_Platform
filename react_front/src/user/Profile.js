@@ -45,10 +45,12 @@ class Profile extends Component {
 
   init = userId => {
     const token = isAuthenticated().token;
+    console.log("token: ", token);
     read(userId, token).then(data => {
       if (data.error) {
         this.setState({ redirectToSignin: true });
       } else {
+        console.log("data: ", data);
         let following = this.checkFollow(data);
         this.setState({ user: data, following });
         this.loadPosts(data._id);
@@ -58,9 +60,10 @@ class Profile extends Component {
 
   loadPosts = userId => {
     const token = isAuthenticated().token;
+    console.log("token: ", token);
     listByUser(userId, token).then(data => {
       if (data.error) {
-        console.log(data.error);
+        console.log("data.error: ", data.error);
       } else {
         this.setState({ posts: data });
       }

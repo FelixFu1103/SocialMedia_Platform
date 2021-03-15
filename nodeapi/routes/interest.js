@@ -13,7 +13,7 @@ router.post('/interests',  createInterest);
 router.get('/interests',  allInterests);
 router.get('/interests/:userId',  userInterests);
 // router.post('/interests/:userId', requireSignin, hasAuthorization, assignInterest);
-router.put('/interests/', requireSignin, assignInterest);
+router.put('/interests/:userId', requireSignin, assignInterest);
 
 // any route containing :userId, our app will first execute userByID()
 router.param("userId", userById);

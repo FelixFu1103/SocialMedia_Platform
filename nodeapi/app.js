@@ -45,10 +45,10 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(expressValidator());
 app.use(cors());
-app.use('/api', postRoutes);
-app.use('/api', authRoutes);
-app.use('/api', userRoutes);
-app.use('/api', interestRoutes);
+app.use(postRoutes);
+app.use(authRoutes);
+app.use(userRoutes);
+app.use(interestRoutes);
 app.use(function(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {
         res.status(401).json({ error: 'Unauthorized!' });

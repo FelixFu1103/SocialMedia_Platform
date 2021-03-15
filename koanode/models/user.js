@@ -46,25 +46,16 @@ const userSchema = new mongoose.Schema({
     interests: [{type: ObjectId, ref: "Interest"}]
 });
 
-/**
- * Virtual fields are additional fields for a given model.
- * Their values can be set manually or automatically with defined functionality.
- * Keep in mind: virtual properties (password) don’t get persisted in the database.
- * They only exist logically and are not written to the document’s collection.
- */
 
 // virtual field
-userSchema
-    .virtual("password")
-    .set(function(password) {
-        // create temporary variable called _password
+userSchema.virtual("password").set(function(password) {
+        
         this._password = password;
-        // generate a timestamp
+
         this.salt = uuidv1();
-        // encryptPassword()
+
         this.hashed_password = this.encryptPassword(password);
-    })
-    .get(function() {
+    }).get(function() {
         return this._password;
     });
 
@@ -77,10 +68,7 @@ userSchema.methods = {
     encryptPassword: function(password) {
         if (!password) return "";
         try {
-            return crypto
-                .createHmac("sha1", this.salt)
-                .update(password)
-                .digest("hex");
+            return crypto.createHmac("sha1", this.salt).update(password).digest("hex");
         } catch (err) {
             return "";
         }

@@ -24,14 +24,7 @@ const createPostValidator = (req, res, next) => {
 
 const userSignupValidator = (req, res, next) => {
     // name is not null and between 4-10 characters
-    req.check('name')
-        .notEmpty()
-        .withMessage('Name is required')
-        .isLength({
-            min: 4,
-            max: 10
-        })
-        .withMessage('Name is between 4 to 10 characters');
+    req.check('name').notEmpty().withMessage('Name is required');
     // email is not null, valid and normalized
     req.check('email', 'Email must be between 3 to 32 characters')
         .matches(/.+\@.+\..+/)

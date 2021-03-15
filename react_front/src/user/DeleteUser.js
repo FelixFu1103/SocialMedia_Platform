@@ -13,10 +13,12 @@ class DeleteUser extends Component {
         const token = isAuthenticated().token;
         const userId = this.props.userId;
         remove(userId, token).then(data => {
+            // if comment out the error check program goes fine
             if (data.error) {
                 console.log(data.error);
             } else {
                 // signout user
+                console.log("goes here");
                 signout(() => console.log("User is deleted"));
                 // redirect
                 this.setState({ redirect: true });

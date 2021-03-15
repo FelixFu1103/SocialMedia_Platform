@@ -6,6 +6,7 @@ const jaccard = require('jaccard');
 const Heap = require('heap');
 
 const userById = (req, res, next, id) => {
+    console.log("inside userByid ");
     User.findById(id)
         // populate followers and following users array
         .populate('following', '_id name')
@@ -16,22 +17,24 @@ const userById = (req, res, next, id) => {
                     error: 'User not found'
                 });
             }
+            //console.log("newrequest: ", req);
+            //console.log("profile: ", profile);
             req.profile = user; // adds profile object in req with user info
+
             next();
         });
 };
 
-// middleware
 const hasAuthorization = (req, res, next) => {
     let sameUser = req.profile && req.auth && req.profile._id == req.auth._id;
     let adminUser = req.profile && req.auth && req.auth.role === 'admin';
 
-    const isAuthorized = sameUser || adminUser;
+    const authorized = sameUser || adminUser;
 
     // console.log("req.profile ", req.profile, " req.auth ", req.auth);
     // console.log("SAMEUSER", sameUser, "ADMINUSER", adminUser);
 
-    if (!isAuthorized) {
+    if (!authorized) {
         return res.status(403).json({
             error: 'User is not authorized to perform this action'
         });
@@ -40,25 +43,27 @@ const hasAuthorization = (req, res, next) => {
 };
 
 const allUsers = (req, res) => {
+    
     User.find((err, users) => {
-            if (err) {
-                return res.status(400).json({
-                    error: err
-                });
-            }
-            res.json(users);
-        })
-        .select('name email updated created role');
+        if (err) {
+            return res.status(400).json({
+                error: err
+            });
+        }
+        res.json(users);
+        console.log("Inside allUsers");
+    }).select('name email updated created role');
 };
 
-const getCurrentUser = (req, res) => {
+const getUser = (req, res) => {
     req.profile.hashed_password = undefined;
     req.profile.salt = undefined;
+    console.log("getuser: ", req.profile);
     return res.json(req.profile);
 };
 
 
-// only update user profile photo
+
 const updateUser = (req, res, next) => {
     let form = new formidable.IncomingForm();
     // console.log("incoming form data: ", form);
@@ -145,6 +150,7 @@ const editInterests = (req, res) => {
 
 
 const userPhoto = (req, res, next) => {
+    console.log("inside userphoto ");
     if (req.profile.photo.data) {
         res.set(('Content-Type', req.profile.photo.contentType));
         return res.send(req.profile.photo.data);
@@ -164,9 +170,9 @@ const deleteUser = (req, res, next) => {
     });
 };
 
-// follow unfollow they are together 
+// follow unfollow
 const addFollowing = (req, res, next) => {
-    // push the clicked user to the following list
+
     User.findByIdAndUpdate(req.body.userId, { $push: { following: req.body.followId } }, (err, result) => {
         if (err) {
             return res.status(400).json({ error: err });
@@ -188,12 +194,12 @@ const addFollower = (req, res) => {
             result.hashed_password = undefined;
             result.salt = undefined;
             res.json(result);
+            console.log("final result: ", result);
         });
 };
 
 // remove follow unfollow
 const removeFollowing = (req, res, next) => {
-    // pull: take it out 
     User.findByIdAndUpdate(req.body.userId, { $pull: { following: req.body.unfollowId } }, (err, result) => {
         if (err) {
             return res.status(400).json({ error: err });
@@ -242,7 +248,7 @@ exports.deleteUser = deleteUser
 exports.userPhoto = userPhoto
 exports.userById = userById
 exports.updateUser = updateUser
-exports.getCurrentUser = getCurrentUser
+exports.getUser = getUser
 exports.hasAuthorization = hasAuthorization
 exports.allUsers = allUsers
 exports.recommend = recommend
