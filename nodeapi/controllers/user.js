@@ -6,6 +6,7 @@ const jaccard = require('jaccard');
 const Heap = require('heap');
 
 const userById = (req, res, next, id) => {
+    console.log("inside userByid ");
     User.findById(id)
         // populate followers and following users array
         .populate('following', '_id name')
@@ -16,7 +17,10 @@ const userById = (req, res, next, id) => {
                     error: 'User not found'
                 });
             }
+            //console.log("newrequest: ", req);
+            //console.log("profile: ", profile);
             req.profile = user; // adds profile object in req with user info
+
             next();
         });
 };
@@ -39,6 +43,7 @@ const hasAuthorization = (req, res, next) => {
 };
 
 const allUsers = (req, res) => {
+    
     User.find((err, users) => {
         if (err) {
             return res.status(400).json({
@@ -46,12 +51,14 @@ const allUsers = (req, res) => {
             });
         }
         res.json(users);
+        console.log("Inside allUsers");
     }).select('name email updated created role');
 };
 
 const getUser = (req, res) => {
     req.profile.hashed_password = undefined;
     req.profile.salt = undefined;
+    console.log("getuser: ", req.profile);
     return res.json(req.profile);
 };
 
@@ -143,6 +150,7 @@ const editInterests = (req, res) => {
 
 
 const userPhoto = (req, res, next) => {
+    console.log("inside userphoto ");
     if (req.profile.photo.data) {
         res.set(('Content-Type', req.profile.photo.contentType));
         return res.send(req.profile.photo.data);
@@ -164,6 +172,7 @@ const deleteUser = (req, res, next) => {
 
 // follow unfollow
 const addFollowing = (req, res, next) => {
+
     User.findByIdAndUpdate(req.body.userId, { $push: { following: req.body.followId } }, (err, result) => {
         if (err) {
             return res.status(400).json({ error: err });
@@ -185,6 +194,7 @@ const addFollower = (req, res) => {
             result.hashed_password = undefined;
             result.salt = undefined;
             res.json(result);
+            console.log("final result: ", result);
         });
 };
 

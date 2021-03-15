@@ -22,6 +22,7 @@ const postById = (req, res, next, id) => {
 
 // with pagination
 // api only
+
 const getPosts = async (req, res) => {
     // get current page from req.query or use default value of 1
     const currentPage = req.query.page || 1;
@@ -59,7 +60,7 @@ const createPost = (req, res, next) => {
             });
         }
         let post = new Post(fields);
-
+        console.log("req.profile.hashed_password ", req);
         req.profile.hashed_password = undefined;
         req.profile.salt = undefined;
         post.postedBy = req.profile;
@@ -95,8 +96,11 @@ const postsByUser = (req, res) => {
 };
 
 const isPoster = (req, res, next) => {
+    console.log("req: ", req);
+    console.log("req.post: ", req.post);
+    console.log("req.auth: ", req.auth);
     let sameUser = req.post && req.auth && req.post.postedBy._id == req.auth._id;
-    let adminUser = req.post && req.auth && req.auth.role === 'admin';
+    //let adminUser = req.post && req.auth && req.auth.role === 'admin';
 
     // console.log("req.post ", req.post, " req.auth ", req.auth);
     // console.log("SAMEUSER: ", sameUser, " ADMINUSER: ", adminUser);
@@ -156,6 +160,7 @@ const deletePost = (req, res) => {
 };
 
 const photo = (req, res, next) => {
+    console.log(req.post);
     res.set('Content-Type', req.post.photo.contentType);
     return res.send(req.post.photo.data);
 };
@@ -165,6 +170,8 @@ const singlePost = (req, res) => {
 };
 
 const like = (req, res) => {
+    console.log("postId: ", req.body.postId);
+    console.log("userId: ", req.body.userId);
     Post.findByIdAndUpdate(req.body.postId, { $push: { likes: req.body.userId } }, { new: true }).exec(
         (err, result) => {
             if (err) {
@@ -172,6 +179,7 @@ const like = (req, res) => {
                     error: err
                 });
             } else {
+                console.log("res: ", result);
                 res.json(result);
             }
         }

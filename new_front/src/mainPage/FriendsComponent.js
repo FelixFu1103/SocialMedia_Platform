@@ -77,6 +77,8 @@ class FriendsComponent extends React.Component {
       const token = jwt.token;
       const userId = jwt.user._id;
       const userInterests = this.state.changedInterests;
+
+      console.log("userInterests: ", userInterests);
       assignInterest(userId, token, userInterests).then(data => {
         if (data.error) {
           console.log("Assign interest failed");

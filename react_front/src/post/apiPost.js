@@ -35,6 +35,7 @@ export const list = page => {
 };
 
 export const singlePost = postId => {
+    console.log("Inside singlepost");
     return fetch(`${process.env.REACT_APP_API_URL}/post/${postId}`, {
         method: "GET"
     })
@@ -60,6 +61,8 @@ export const listByUser = (userId, token) => {
 };
 
 export const remove = (postId, token) => {
+    console.log("got remove");
+    console.log("postid: ", postId);
     return fetch(`${process.env.REACT_APP_API_URL}/post/${postId}`, {
         method: "DELETE",
         headers: {
@@ -69,7 +72,10 @@ export const remove = (postId, token) => {
         }
     })
         .then(response => {
-            return response.json();
+            //console.log(response.json());
+            //return response.json();
+
+            return "deleted";
         })
         .catch(err => console.log(err));
 };
@@ -91,6 +97,7 @@ export const update = (postId, token, post) => {
 };
 
 export const like = (userId, token, postId) => {
+    console.log("I am in like!!");
     return fetch(`${process.env.REACT_APP_API_URL}/post/like`, {
         method: "PUT",
         headers: {
@@ -101,6 +108,7 @@ export const like = (userId, token, postId) => {
         body: JSON.stringify({ userId, postId })
     })
         .then(response => {
+            //return "lked";
             return response.json();
         })
         .catch(err => console.log(err));

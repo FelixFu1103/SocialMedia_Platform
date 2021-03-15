@@ -20,8 +20,10 @@ class ProfileComponent extends React.Component {
     }
     checkFollow = user => {
       const jwt = isAuthenticated();
+
       const match = user.followers.find(follower => {
         // one id has many other ids (followers) and vice versa
+        console.log("user.id: ", user._id);
         return follower._id === jwt.user._id;
       });
       return match;
@@ -42,10 +44,14 @@ class ProfileComponent extends React.Component {
   
     init = userId => {
       const token = isAuthenticated().token;
+      console.log("token2: ", token);
+      console.log("userid: ", userId);
       read(userId, token).then(data => {
         if (data.error) {
+          console.log("data.error: ", data.error);
           this.setState({ redirectToSignin: true });
         } else {
+          console.log(data);
           let following = this.checkFollow(data);
           this.setState({ user: data, following });
           this.loadPosts(data._id);
@@ -55,9 +61,11 @@ class ProfileComponent extends React.Component {
   
     loadPosts = userId => {
       const token = isAuthenticated().token;
+      console.log("userid: ", userId);
+      console.log("token: ", token);
       listByUser(userId, token).then(data => {
         if (data.error) {
-          console.log(data.error);
+          console.log("data.error: ", data.error);
         } else {
           this.setState({ posts: data });
         }
@@ -67,6 +75,7 @@ class ProfileComponent extends React.Component {
     componentDidMount() {
       const userId = this.props.match.params.userId;
       this.init(userId);
+      console.log("userid: ", userId);
     }
   
     componentWillReceiveProps(props) {

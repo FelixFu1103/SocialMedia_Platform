@@ -42,15 +42,19 @@ class SinglePost extends Component {
     };
 
     likeToggle = () => {
+        console.log("inside likeToggle");
         if (!isAuthenticated()) {
             this.setState({ redirectToSignin: true });
             return false;
         }
         let callApi = this.state.like ? unlike : like;
+        console.log("api: ", callApi);
         const userId = isAuthenticated().user._id;
         const postId = this.state.post._id;
         const token = isAuthenticated().token;
-
+        console.log("token is : ", token);
+        console.log("postId: ", postId);
+        console.log("userId: ", userId);
         callApi(userId, token, postId).then(data => {
             if (data.error) {
                 console.log(data.error);
@@ -64,8 +68,11 @@ class SinglePost extends Component {
     };
 
     deletePost = () => {
+        console.log("am i in deletepost???");
         const postId = this.props.match.params.postId;
         const token = isAuthenticated().token;
+        console.log("token: ", token);
+        console.log("got here");
         remove(postId, token).then(data => {
             if (data.error) {
                 console.log(data.error);
@@ -77,6 +84,7 @@ class SinglePost extends Component {
 
     deleteConfirmed = () => {
         let answer = window.confirm('Are you sure you want to delete your post?');
+        console.log("answer: ", answer);
         if (answer) {
             this.deletePost();
         }
