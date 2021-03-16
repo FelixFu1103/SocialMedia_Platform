@@ -4,10 +4,10 @@ import {withRouter } from 'react-router-dom';
 import { read } from '../helper/user';
 import DefaultProfile from "../images/avatar.jpg";
 import { listByUser } from '../helper/posts';
-import { Card, Button, Checkbox } from 'antd';
+import { Button, Checkbox,Form, Input } from 'antd';
 import history from './History';
-import { recommendfriend } from '../helper/friends';
-import { getAllInterests, readInterests, assignInterest } from '../helper/interest';
+import { recommendfriend, follow } from '../helper/friends';
+import { getAllInterests, readInterests, assignInterest, addInterest } from '../helper/interest';
 
 
 class FriendsComponent extends React.Component {
@@ -20,18 +20,18 @@ class FriendsComponent extends React.Component {
           interests: [],
           allInterests: [],
           changedInterests: [],
+          selectedInterests: [],
           error: "",
           posts: [],
           recommendfriend: "",
+          newInterest : "",
+          open : false
         };
-        // this.onChange = this.onChange.bind(this);
-
     }
 
       init = userId => {
         const token = isAuthenticated().token;
         read(userId, token).then(data => {
-          console.log("data >>> ", data);
           if (data.error) {
             this.setState({ redirectToSignin: true });
           } else {
@@ -44,17 +44,15 @@ class FriendsComponent extends React.Component {
               this.setState({ redirectToSignin: true });
             } else {
                 this.setState({interests: data});
-                console.log("readInterests work");
             }
           });
         
         recommendfriend(userId, token).then(data => {
             if (data.error) {
-              console.log("Recommending friends failed");
+              console.log(data.error);
             } else {
               if (data.jindex > 0.2) {
                 this.setState({recommendfriend: data});
-                console.log("recommendfriend work");
               } else {
                 console.log("No friends for recommendation");
               }
@@ -63,10 +61,9 @@ class FriendsComponent extends React.Component {
 
         getAllInterests().then(data => {
           if (data.error) {
-            console.log("Get all interests failed");
+            console.log(data.error);
           } else {
             this.setState({allInterests: data});
-            console.log("recommendfriend work");
           }
         } )
       };
@@ -76,61 +73,117 @@ class FriendsComponent extends React.Component {
       const jwt = isAuthenticated();
       const token = jwt.token;
       const userId = jwt.user._id;
-      const userInterests = this.state.changedInterests;
+      const userInterests = this.state.selectedInterests;
       assignInterest(userId, token, userInterests).then(data => {
         if (data.error) {
-          console.log("Assign interest failed");
+          console.log(data.error);
         } else {
-          console.log("Assign interest work");
+          this.setState({interests: userInterests});
         }
         window.location.reload();
       })
     };
 
+    followThis = (followId, followName) => {
+      const jwt = isAuthenticated();
+      const token = jwt.token;
+      const userId = jwt.user._id;
 
-    onChange = e => {
-      this.setState({changedInterests : e})
+      follow(userId, token, followId).then(data => {
+        if (data.error) {
+            this.setState({ error: data.error });
+        } else {
+            this.setState({
+                open: true,
+                msg: `Following ${followName}`
+            });
+        }
+      });
     };
 
-      componentDidMount() {
-        const userId = isAuthenticated().user._id;
-        this.init(userId);
+    createInterest = () => {
+      const oneInterest = this.state.newInterest;
+      addInterest(oneInterest).then (data =>{
+        if (data.error) {
+          this.setState({ error: data.error });
+      } else {
+        this.setState({
+                open: true,
+                msg: `${oneInterest} was added into interest list`  
+            });
       }
+      });
+    }
+
+    onChange = e => {
+      this.setState({selectedInterests : e})
+    };
+
+    handleChange = (event) => {
+      this.setState({newInterest : event.target.value});
+    }
+
+    componentDidMount() {
+      const userId = isAuthenticated().user._id;
+      this.init(userId);
+    }
     
-      componentWillReceiveProps(props) {
-        const userId = isAuthenticated().user._id;
-        this.init(userId);
-      }
+    componentWillReceiveProps(props) {
+      const userId = isAuthenticated().user._id;
+      this.init(userId);
+    }
     
     render(){
         // const interests = this.state.user.interests;
-        const {user, interests, recommendfriend, allInterests} = this.state;     
+        const {user, interests, recommendfriend, allInterests, open, msg} = this.state;     
 
         // const interests = user.interests;   
         return (
-            <div style={{ marginLeft:20, marginTop:20}}  vertical layout>
+            <div style={{ marginLeft:40, marginTop:20}}  vertical layout>
               <div> 
-                <h3>Your Interests</h3>
+                <h3>What you like</h3>
                 <ul>
-                    {interests.map((value, index) => {
+                    {this.state.interests.map((value, index) => {
                         return <li> {value.title}</li>
                     })}
                 </ul>
               </div>
-            <div> 
+              <div style={{  marginTop:20}} > 
               <h3>Recommending Friends</h3>
-              <ul>
-                {recommendfriend.name}
-              </ul>
-            </div>
+               {Object.keys(recommendfriend).length > 1? 
+                <ul>
+                  {recommendfriend.name}
+                 <button  onClick={() => this.followThis(recommendfriend.userId, recommendfriend.name)}  className="btn  btn-primary" style={{marginLeft:10}}>
+                    Follow
+                </button> 
+                </ul>: <ul> No recommendation </ul>} 
+
+              </div>
+
             <div>
-              <h3>Edit Your Interests</h3>
-              <Checkbox.Group style={{width: "500px"}} options={allInterests.map(column => ({label:column.title, value: column._id}))}  onChange={this.onChange}/>
+              <h3>Choose Your Interests</h3>
+               <Checkbox.Group style={{width: "500px"}} options={allInterests.map(column => ({label:column.title, value: column._id}))}  onChange={this.onChange}/>
+
             </div>
 
-            <button  onClick={this.updateInterests} className="btn  btn-primary">
+            <Button  onClick={this.updateInterests} className="btn update interests">
                 Update interests
-            </button>
+            </Button>
+
+            <div style={{marginTop:20}} >
+              <h3>Add A New Interest</h3>
+              <input 
+                type="text" 
+                id="userInput"  
+                onChange={this.handleChange}
+              />
+              <button onClick={this.createInterest} className="btn add interest" style={{marginLeft:10}}>
+                    Add
+              </button> 
+            </div>
+            {open && (
+                    <div className="alert alert-success">{msg}</div>
+                )}
           </div>
         )
     }
