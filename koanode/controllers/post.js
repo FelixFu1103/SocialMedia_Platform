@@ -1,6 +1,7 @@
 const Post = require('../models/post');
 const User = require('../models/user');
 const formidable = require('koa2-formidable');
+const multer = require('@koa/multer');
 const fs = require('fs');
 const _ = require('lodash');
 const getId = require('../middleware/id');
@@ -57,43 +58,35 @@ let controller = {
     writePost : async(ctx, next, id) => {
         console.log("inside writepost");
 
-        //var form = new formidable.IncomingForm();
-
-        // const form = formidable({ multiples: true });
-        // form.keepExtensions = true;
-        //console.log("ctx.request.profile: ", JSON.stringify(ctx.request.profile));
         id = getId(ctx, 10);
-        const user = await User.findById(id).exec();
-       // console.log("user: ", user);
-        // var formFields = await new Promise((resolve, reject) => {
+        // console.log("userid: ", id);
+        const photo = JSON.stringify(ctx.request.files);
 
-            // form.parse(ctx, (err, fields, files) => {
-            //     if (err) {
-            //         //reject(err);
-            //         console.log("Image could not be uploaded");
-            //         // return res.status(400).json({
-            //         //     error: 'Image could not be uploaded'
-            //         // });
-            //     }
-                //let post = new Post(fields);
-                console.log("ctx.request.body: ", ctx.request);
-                // user.hashed_password = undefined;
-                // user.salt = undefined;
-                // post.postedBy = user;
-        
-                
-            //     if (files.photo) {
-            //         post.photo.data = fs.readFileSync(files.photo.path);
-            //         post.photo.contentType = files.photo.type;
-            //     }
-            //     post.save((err, result) => {
-            //         if (err) {
-            //             console.log("error: ", err);
-            //         }
-            //         ctx.response.body = result;
-            //     });
-            // // resolve(fields);
-            // });  
+        const body = JSON.stringify(ctx.request.body);
+        const jsonPhoto = JSON.parse(photo);
+        const jsonBody = JSON.parse(body);
+        console.log("photo: ", jsonPhoto.photo);
+        console.log("title: ", jsonBody.title);
+        const user = await User.findById(id).exec();
+   
+        console.log("body: ", jsonBody);
+        let post = new Post(jsonBody);
+        post.postedBy = user;
+        console.log("user profile: ", user);
+        //console.log("jsonPhoto.photo.path: ", jsonPhoto.photo.path);
+        //let conType = jsonPhoto.photo.type.slice(6);
+        // console.log("image path: ", jsonPhoto.photo.path.concat(".", conType));
+        // const path = jsonPhoto.photo.path.concat(".", conType);
+        console.log("new post: ", post);
+        //console.log("new photo: ", jsonPhoto);
+        if (jsonPhoto.photo) {
+            post.photo.data = fs.readFileSync(jsonPhoto.photo.path);
+            post.photo.contentType = jsonPhoto.photo.type;
+        }
+          
+        console.log("new post after adding photo: ", post);
+        post.save();
+        ctx.body = post; 
         next();
     },
     

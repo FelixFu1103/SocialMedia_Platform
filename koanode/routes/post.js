@@ -24,7 +24,7 @@ router.put('/post/uncomment', jwt, post.uncomment); // working
 
 // // post routes
 // // middleware require signin
-router.post('/post/new/:userId', jwt, post.writePost, validator.writePostValidator); // inprogress
+router.post('/post/new/:userId', jwt, post.writePost, validator.writePostValidator); // working
 router.get('/posts/by/:userId', jwt, post.postsByUser); // working
 // do single poist before do the delete operation
 router.get('/post/:postId', post.singlePost); // working

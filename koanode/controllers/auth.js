@@ -59,11 +59,3 @@ let controllers = {
 };
 
 module.exports = controllers;
-
-// exports.signup = signup
-// exports.signin = signin
-// exports.logout = logout
-// exports.requireSignin = requireSignin
-// exports.forgotPassword = forgotPassword //
-// exports.resetPassword = resetPassword //
-// exports.socialLogin = socialLogin //

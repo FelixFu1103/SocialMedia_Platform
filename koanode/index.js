@@ -2,7 +2,7 @@
 const koa = require('koa');
 const mongoose = require('mongoose');
 const morgan = require('koa-morgan');
-
+const formidable = require('koa2-formidable');
 const bodyParser = require('koa-bodyparser')
 const koaBody = require('koa-body');
 const convert = require('koa-convert');
@@ -39,8 +39,14 @@ mongoose.connection.on('error', err => {
 
 
 app.use(morgan('dev'));
-app.use(koaBody());
-
+app.use(koaBody({
+    multipart: true,
+    keepExtensions : true,
+    formidable: {
+        maxFileSize: 200*1024*1024    // 设置上传文件大小最大限制，默认2M
+    }
+}));
+// app.use(formidable());
 app.use(bodyParser());
 //app.use(cookieParser());
 app.use(koaValidator());
