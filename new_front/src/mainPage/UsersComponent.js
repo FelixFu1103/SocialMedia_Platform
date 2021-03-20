@@ -1,8 +1,6 @@
 import React from 'react';
 import { list } from '../helper/user';
-import DefaultProfile from "../images/avatar.jpg";
-import { Card } from 'antd';
-const { Meta } = Card;
+import { Table, Tag, Space } from 'antd';
 
 class UsersComponent extends React.Component {
     constructor() {
@@ -21,26 +19,51 @@ class UsersComponent extends React.Component {
             }
         });
     }
+    columns = [
+        {
+          title: 'Name',
+          dataIndex: 'name',
+          key: 'name',
+          width:'200px',
+          render: text => <a>{text}</a>,
+        },
+        {
+          title: 'Start Date',
+          dataIndex: 'created',
+          key: 'created',
+          width:'300px',
+          render: text => <Space>{new Date(text).toDateString()}</Space>
+        },
+        {
+          title: 'Email',
+          dataIndex: 'email',
+          key: 'email',
+          width:'300px',
+        },
+        /*{
+          title: 'Follower',
+          key: 'followers',
+          dataIndex: 'followers',
+          width:'300px',
+          sorter: (a, b) => a.followers.length - b.followers.length,
+          render: followers => <Space>{followers.length}</Space> 
+        },
+        {
+            title: 'Following',
+            key: 'following',
+            dataIndex: 'following',
+            width:'300px',
+            sorter: (a, b) => a.followers.length - b.followers.length,
+            render: followers => <Space>{followers.length}</Space> 
+          },*/
+      ];
+
     render(){
         const {users} = this.state;
         return (
             <div style={{marginLeft:80, marginTop:50}}>
-                {users.map((user)=> (
-                    <Card hoverable style={{ width: 240 }}
-                        cover={<img
-                            style={{ height: "200px", width: "auto" }}
-                            className="img-thumbnail"
-                            src={`${process.env.REACT_APP_API_URL}/user/photo/${
-                                user._id
-                            }`}
-                            onError={i => (i.target.src = `${DefaultProfile}`)}
-                            alt={user.name}
-                        />}
-                    >
-                        <Meta title={user.name} description={user.email} />
-                    </Card>
-                ))}
-                
+                {console.log(users)}
+                <Table columns={this.columns} dataSource={users}/>
             </div>
         )
     }
