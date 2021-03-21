@@ -49,7 +49,7 @@ class ProfileComponent extends React.Component {
         return (
           <div style={{marginLeft:40, marginTop:30}}>
             <Button type="primary" style={{marginLeft:40, backgroundColor:"GrayText"}} onClick={()=>signout(this.returnToHome)}>Sign out</Button>
-            <Card title={user.name} bordered={false} style={{ width: 1500 }}>
+            <Card title={user.name} bordered={false} style={{ width: 1000 }}>
             
               <Descriptions size="small" column={3}>
                 <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
