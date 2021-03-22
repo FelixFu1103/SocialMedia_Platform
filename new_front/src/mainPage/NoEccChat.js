@@ -76,7 +76,7 @@ export default class index extends Component {
         return (
             <div className="flexBox">
                 <div className="chatBox">
-                    <div className="chatHead"><p>EccChat</p></div>
+                    <div className="chatHead"><p>NoEccChat</p></div>
                     <div className="chatBody" id="chatBody">
                     </div>
                     <div className="chatFooter">
