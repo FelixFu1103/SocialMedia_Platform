@@ -3,89 +3,76 @@ import { isAuthenticated, signout } from "../helper";
 import {withRouter } from 'react-router-dom';
 import { read } from '../helper/user';
 import DefaultProfile from "../images/avatar.jpg";
-import { listByUser } from '../helper/posts';
-import { Card, Button } from 'antd';
+import { Card, Button, Descriptions, Tag, Avatar, Col, Row} from 'antd';
 import history from './History';
+import {list} from '../helper/posts';
+import _ from 'lodash';
+import SinglePostComponent from './SinglePostComponent';
+import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 
+const { Meta } = Card;
 class ProfileComponent extends React.Component {
     constructor() {
         super();
         this.state = {
-          user: { following: [], followers: [] },
-          redirectToSignin: false,
-          following: false,
-          error: "",
-          posts: []
+          user: {followers: []},
+          myPost:[]
         };
     }
-    checkFollow = user => {
-      const jwt = isAuthenticated();
-      const match = user.followers.find(follower => {
-        // one id has many other ids (followers) and vice versa
-        return follower._id === jwt.user._id;
-      });
-      return match;
-    };
-  
-    clickFollowButton = callApi => {
-      const userId = isAuthenticated().user._id;
-      const token = isAuthenticated().token;
-  
-      callApi(userId, token, this.state.user._id).then(data => {
-        if (data.error) {
-          this.setState({ error: data.error });
-        } else {
-          this.setState({ user: data, following: !this.state.following });
-        }
-      });
-    };
-  
-    init = userId => {
-      const token = isAuthenticated().token;
-      read(userId, token).then(data => {
-        if (data.error) {
-          this.setState({ redirectToSignin: true });
-        } else {
-          let following = this.checkFollow(data);
-          this.setState({ user: data, following });
-          this.loadPosts(data._id);
-        }
-      });
-    };
-  
-    loadPosts = userId => {
-      const token = isAuthenticated().token;
-      listByUser(userId, token).then(data => {
-        if (data.error) {
-          console.log(data.error);
-        } else {
-          this.setState({ posts: data });
-        }
-      });
-    };
-  
+    
     componentDidMount() {
       const userId = this.props.match.params.userId;
-      this.init(userId);
+      const token = isAuthenticated().token;
+      list(1).then(data => {
+        if (data.error) {
+            console.log(data.error);
+        } else {
+            const temp = _.filter(data, (d) => {return d.postedBy._id === userId})
+            this.setState({myPost : temp})
+        }
+      });
+      read(userId, token).then(data => {
+        if (data.error) {
+          console.log("data.error: ", data.error);
+        } else {
+          this.setState({ user: data});
+        }
+      }); 
     }
-  
-    componentWillReceiveProps(props) {
-      const userId = props.match.params.userId;
-      this.init(userId);
+
+    returnToHome = () => {
+      history.push('/');  
     }
-  
+
     render(){
-        const {user} = this.state;
+        const {user, myPost} = this.state;
         return (
-            <div className="site-card-border-less-wrapper" style={{marginLeft:50, marginTop:100}}>
-                <Card title={user.name} bordered={false} style={{ width: 800 }}>
-                    <p>Email: {user.email}</p>
-                    <p>{`Joined ${new Date(user.created).toDateString()}`}</p>
-                    <p>Following: {user.following.length}</p>
-                    <p>Follower: {user.followers.length}</p>
-                </Card>
-                <Button onClick={() => signout(()=>history.push('/'))}>Sign out</Button>
-            </div>
+          <div style={{marginLeft:40, marginTop:30}}>
+            <Button type="primary" style={{marginLeft:40, backgroundColor:"GrayText"}} onClick={()=>signout(this.returnToHome)}>Sign out</Button>
+            <Card title={user.name} bordered={false} style={{ width: 1000 }}>
+            
+              <Descriptions size="small" column={3}>
+                <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
+                <Descriptions.Item label="Create Time">{new Date(user.created).toDateString()}</Descriptions.Item>
+              </Descriptions>
+              <Descriptions size="small" column={10}>
+                <Descriptions.Item label="Followers">{_.map(user.followers,(key)=><Tag color="purple">{key.name}</Tag>)}</Descriptions.Item>
+              </Descriptions>
+            </Card>
+            <Row style={{marginTop:30}}>
+              {_.map(myPost,(post)=> (
+                <Col span={5} offset={1}>
+                  <Card
+                    style={{ width: 250 }}
+                    cover={<img src={`${process.env.REACT_APP_API_URL}/post/photo/${post._id}`} alt={post.title} />}
+                    actions={[<SettingOutlined key="setting" />, <EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" />,]}>
+                    <Meta title={post.title} description={post.body}/>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          </div>
+            
         )
     }
 }

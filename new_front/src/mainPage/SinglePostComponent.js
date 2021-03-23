@@ -37,6 +37,7 @@ class SinglePostComponent extends React.Component {
     deletePost = () => {
         const token = isAuthenticated().token;
         remove(this.props.post._id, token);
+        window.location.reload();
     };
     checkLike = (likes) => {
         const userId = isAuthenticated().user._id;
