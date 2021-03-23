@@ -4,20 +4,7 @@ const koaJwt = require('koa-jwt');
 const router = require('koa-router')();
 const users = require("../controllers/user");
 const jwt = require('../middleware/jwt');
-    // userById,
-    // allUsers,
-    // getCurrentUser,
-    // updateUser,
-    // deleteUser,
-    // userPhoto,
-    // addFollowing,
-    // addFollower,
-    // removeFollowing,
-    // removeFollower,
-    // findPeople,
-    // hasAuthorization,
-    // editInterests,
-    // recommend
+
 
 
 const auth = require("../controllers/auth");

@@ -2,14 +2,9 @@
 const koa = require('koa');
 const mongoose = require('mongoose');
 const morgan = require('koa-morgan');
-const formidable = require('koa2-formidable');
 const bodyParser = require('koa-bodyparser')
-const koaBody = require('koa-body');
-const convert = require('koa-convert');
 const cookieParser = require('koa-cookie-parser');
 const koaValidator = require('koa-middle-validator');
-const koasession = require('koa-session');
-// const expressValidator = require('express-validator');
 const cors = require('koa-cors');
 const Router = require('koa-router');
 const router = new Router();
@@ -63,41 +58,6 @@ app.use(userRoute.routes())
     .use(authRoute.allowedMethods())
     .use(interestRoute.routes())
     .use(interestRoute.allowedMethods());
-
-
-
-
-
-
-
-
-
-// app.use(async (ctx, next) => {
-//     try {
-//       await next();
-//     } catch (err) {
-//       // will only respond with JSON
-//       ctx.status = err.statusCode || err.status || 500;
-//       ctx.body = {
-//         message: err.message
-//       };
-//     }
-//   })
-
-// app.use(async(ctx, next) => {
-//     if (err.name === 'UnauthorizedError') {
-//         ctx.res.status(401).json({ error: 'Unauthorized!' });
-//     }
-//     await next();
-// });
-
-// app.use('/api', postRoutes);
-// app.use('/api', authRoutes);
-// app.use(router.routes())
-//    .use(router.allowedMethods());
-//app.use('/api', userRoutes);
-
-// app.use('/api', interestRoutes);
 
 
 const port = process.env.PORT || 8080;

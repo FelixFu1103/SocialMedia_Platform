@@ -59,12 +59,17 @@ const createPost = (req, res, next) => {
                 error: 'Image could not be uploaded'
             });
         }
+        console.log("fields: ", fields);
         let post = new Post(fields);
-        console.log("req.profile.hashed_password ", req);
+        //console.log("req.profile.hashed_password ", req);
         req.profile.hashed_password = undefined;
         req.profile.salt = undefined;
         post.postedBy = req.profile;
-
+        console.log("new post: ", post);
+        console.log("user: ", req.profile);
+        console.log("files.photo: ", files.photo);
+        console.log("files.photo.path: ", files.photo.path);
+        
         if (files.photo) {
             post.photo.data = fs.readFileSync(files.photo.path);
             post.photo.contentType = files.photo.type;

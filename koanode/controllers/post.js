@@ -5,7 +5,6 @@ const multer = require('@koa/multer');
 const fs = require('fs');
 const _ = require('lodash');
 const getId = require('../middleware/id');
-const getId2 = require('../middleware/id2');
 const getpostInfo = require('../middleware/getpostInfo');
 let controller = {
     // postById : async (ctx, next, id) => {

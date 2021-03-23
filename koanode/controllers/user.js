@@ -80,40 +80,40 @@ let controller = {
     
     // // update user profile photo and password
     // deal with later
-    updateUser : async(ctx, next) => {
-        let form = new formidable.IncomingForm();
-        // console.log("incoming form data: ", form);
-        form.keepExtensions = true;
-        form.parse(req, (err, fields, files) => {
-            if (err) {
-                return res.status(400).json({
-                    error: 'Photo could not be uploaded'
-                });
-            }
-            // save user
-            let user = req.profile;
-            user = _.extend(user, fields);
+    // updateUser : async(ctx, next) => {
+    //     let form = new formidable.IncomingForm();
+    //     // console.log("incoming form data: ", form);
+    //     form.keepExtensions = true;
+    //     form.parse(req, (err, fields, files) => {
+    //         if (err) {
+    //             return res.status(400).json({
+    //                 error: 'Photo could not be uploaded'
+    //             });
+    //         }
+    //         // save user
+    //         let user = req.profile;
+    //         user = _.extend(user, fields);
     
-            user.updated = Date.now();
+    //         user.updated = Date.now();
     
-            if (files.photo) {
-                user.photo.data = fs.readFileSync(files.photo.path);
-                user.photo.contentType = files.photo.type;
-            }
+    //         if (files.photo) {
+    //             user.photo.data = fs.readFileSync(files.photo.path);
+    //             user.photo.contentType = files.photo.type;
+    //         }
     
-            user.save((err, result) => {
-                if (err) {
-                    return res.status(400).json({
-                        error: err
-                    });
-                }
-                user.hashed_password = undefined;
-                user.salt = undefined;
-                // console.log("user after update with formdata: ", user);
-                res.json(user);
-            });
-        });
-    },
+    //         user.save((err, result) => {
+    //             if (err) {
+    //                 return res.status(400).json({
+    //                     error: err
+    //                 });
+    //             }
+    //             user.hashed_password = undefined;
+    //             user.salt = undefined;
+    //             // console.log("user after update with formdata: ", user);
+    //             res.json(user);
+    //         });
+    //     });
+    // },
     
     recommend : async(ctx, next, id) => {
         //
