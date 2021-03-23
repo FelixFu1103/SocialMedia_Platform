@@ -7,7 +7,8 @@ const cookieParser = require('koa-cookie-parser');
 const koaValidator = require('koa-middle-validator');
 const cors = require('koa-cors');
 const Router = require('koa-router');
-const router = new Router();
+//const router = new Router();
+const koaBody = require('koa-body');
 
 
 const dotenv = require('dotenv');

@@ -53,6 +53,7 @@ export default class index extends Component {
                 other.appendChild(otherContent)
                 chatBody.appendChild(other)
             }
+            console.info("****** decrypt key " + msgdata.key + "******")
         }
     }
     send = ()=>{
@@ -72,14 +73,14 @@ export default class index extends Component {
         }
         socket.send(JSON.stringify(sendMsg))
         this.setState({content:''})
-
+        console.info("****** encrypt key " + keys.enc + "******")
     }
     clear = ()=>{this.setState({content:''})}
     render() {
         return (
             <div className="flexBox">
                 <div className="chatBox">
-                    <div className="chatHead"><p>GroupChat</p></div>
+                    <div className="chatHead"><p>EccChat</p></div>
                     <div className="chatBody" id="chatBody">
                     </div>
                     <div className="chatFooter">

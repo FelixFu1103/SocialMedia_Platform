@@ -3,6 +3,7 @@ import { Menu, Button } from 'antd';
 import { Link} from 'react-router-dom';
 import {isAuthenticated} from '../helper';
 import {AppstoreOutlined,MenuUnfoldOutlined,MenuFoldOutlined,PieChartOutlined,DesktopOutlined,ContainerOutlined,MailOutlined,} from '@ant-design/icons';
+import EccChat from "./EccChat";
 
 const { SubMenu } = Menu;
 class MenuComponent extends React.Component {
@@ -35,9 +36,8 @@ class MenuComponent extends React.Component {
                     <Menu.Item key="newPost"><Link to="/new_post">New Post</Link></Menu.Item>
                 </SubMenu>
                 <SubMenu key="chatting" icon={<AppstoreOutlined/>} title="Chatting">
-                    <Menu.Item key="no"><Link to="/no_securty">No security</Link></Menu.Item>
-                    <Menu.Item key="rsa"><Link to="/RSA">RSA</Link></Menu.Item>
-                    <Menu.Item key="ecc"><Link to="/ECC">ECC</Link></Menu.Item>
+                    <Menu.Item key="no"><Link to="/NoEcc">No security</Link></Menu.Item>
+                    <Menu.Item key="ecc"><Link to="/Ecc">ECC</Link></Menu.Item>
                 </SubMenu>
                 </Menu>
             </div>

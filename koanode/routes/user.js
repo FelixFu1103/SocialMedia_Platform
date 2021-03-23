@@ -21,7 +21,7 @@ router.put("/user/unfollow", jwt, users.removeFollowing, users.removeFollower);
 router.get("/users", users.allUsers); // working
 // get user profile
 router.get("/user/:userId", jwt, users.getCurrentUser); // working
-router.put("/user/:userId", jwt, users.hasAuthorization, users.updateUser); // in progress
+// router.put("/user/:userId", jwt, users.hasAuthorization, users.updateUser); // in progress
 router.delete("/user/:userId", jwt, users.deleteUser); // working
 // router.get("/user/:userId/interests", requireSignin, hasAuthorization, editInterests);
 router.get("/user/:userId/recommendation", jwt, users.recommend);
