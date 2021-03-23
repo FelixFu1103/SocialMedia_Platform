@@ -73,6 +73,7 @@ class FriendsComponent extends React.Component {
       const jwt = isAuthenticated();
       const token = jwt.token;
       const userId = jwt.user._id;
+      //const userInterests = this.state.changedInterests;
       const userInterests = this.state.selectedInterests;
       assignInterest(userId, token, userInterests).then(data => {
         if (data.error) {
@@ -89,6 +90,7 @@ class FriendsComponent extends React.Component {
       const token = jwt.token;
       const userId = jwt.user._id;
 
+    
       follow(userId, token, followId).then(data => {
         if (data.error) {
             this.setState({ error: data.error });
@@ -101,6 +103,10 @@ class FriendsComponent extends React.Component {
       });
     };
 
+    // componentDidMount() {
+    //   const userId = isAuthenticated().user._id;
+    //   this.init(userId);
+    
     createInterest = () => {
       const oneInterest = this.state.newInterest;
       addInterest(oneInterest).then (data =>{
@@ -135,6 +141,7 @@ class FriendsComponent extends React.Component {
     
     render(){
         // const interests = this.state.user.interests;
+        //const {user, interests, recommendfriend, allInterests} = this.state; 
         const {user, interests, recommendfriend, allInterests, open, msg} = this.state;     
 
         // const interests = user.interests;   
@@ -143,24 +150,32 @@ class FriendsComponent extends React.Component {
               <div> 
                 <h3>What you like</h3>
                 <ul>
-                    {this.state.interests.map((value, index) => {
+                  {this.state.interests.map((value, index) => {
                         return <li> {value.title}</li>
                     })}
                 </ul>
               </div>
-              <div style={{  marginTop:20}} > 
+            <div>
+              <div style={{  marginTop:20}} >
               <h3>Recommending Friends</h3>
+              <ul>
+                {recommendfriend.name}
+              </ul>
+            </div>
                {Object.keys(recommendfriend).length > 1? 
                 <ul>
                   {recommendfriend.name}
+
                  <button  onClick={() => this.followThis(recommendfriend.userId, recommendfriend.name)}  className="btn  btn-primary" style={{marginLeft:10}}>
                     Follow
                 </button> 
                 </ul>: <ul> No recommendation </ul>} 
 
-              </div>
+              </div> 
 
             <div>
+            <h3>Edit Your Interests</h3>
+              <Checkbox.Group style={{width: "500px"}} options={allInterests.map(column => ({label:column.title, value: column._id}))}  onChange={this.onChange}/>
               <h3>Choose Your Interests</h3>
                <Checkbox.Group style={{width: "500px"}} options={allInterests.map(column => ({label:column.title, value: column._id}))}  onChange={this.onChange}/>
 
@@ -168,7 +183,7 @@ class FriendsComponent extends React.Component {
 
             <Button  onClick={this.updateInterests} className="btn update interests">
                 Update interests
-            </Button>
+            </Button> 
 
             <div style={{marginTop:20}} >
               <h3>Add A New Interest</h3>
