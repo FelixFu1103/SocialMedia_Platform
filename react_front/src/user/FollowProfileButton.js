@@ -15,7 +15,7 @@ class FollowProfileButton extends Component {
             <div className="d-inline-block">
                 {!this.props.following ? (
                     <button
-                        onClick={this.followClick}
+                        onClick={thi s.followClick}
                         className="btn btn-success btn-raised mr-5"
                     >
                         Follow

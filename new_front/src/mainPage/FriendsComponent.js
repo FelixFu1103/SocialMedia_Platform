@@ -1,12 +1,12 @@
 import React from 'react';
 import { isAuthenticated, signout } from "../helper";
 import {withRouter } from 'react-router-dom';
-import { read } from '../helper/user';
+import { read, follow, unfollow} from '../helper/user';
 import DefaultProfile from "../images/avatar.jpg";
 import { listByUser } from '../helper/posts';
 import { Button, Checkbox,Form, Input } from 'antd';
 import history from './History';
-import { recommendfriend, follow } from '../helper/friends';
+import { recommendfriend} from '../helper/friends';
 import { getAllInterests, readInterests, assignInterest, addInterest } from '../helper/interest';
 
 
@@ -36,6 +36,7 @@ class FriendsComponent extends React.Component {
             this.setState({ redirectToSignin: true });
           } else {
             this.setState({ user: data});
+            console.log("data >>>" , data);
           }
         });
 
@@ -98,6 +99,26 @@ class FriendsComponent extends React.Component {
                 msg: `Following ${followName}`
             });
         }
+        window.location.reload();
+      });
+    };
+
+
+    unfollowThis = (unfollowId, unfollowName) => {
+      const jwt = isAuthenticated();
+      const token = jwt.token;
+      const userId = jwt.user._id;
+
+      unfollow(userId, token, unfollowId).then(data => {
+        if (data.error) {
+            this.setState({ error: data.error });
+        } else {
+            this.setState({
+                open: true,
+                msg: `Unfollowing ${unfollowName}`
+            });
+        }
+        window.location.reload();
       });
     };
 
@@ -143,22 +164,38 @@ class FriendsComponent extends React.Component {
               <div> 
                 <h3>What you like</h3>
                 <ul>
-                    {this.state.interests.map((value, index) => {
-                        return <li> {value.title}</li>
-                    })}
+                    {interests.map((value) => (
+                        <li> {value.title}</li>
+                    ))}
                 </ul>
               </div>
-              <div style={{  marginTop:20}} > 
+
+            <div style={{ marginTop:20}} > 
+              <h3>Following</h3>
+              {Object.keys(user.following).length > 0? 
+
+                user.following.map((value, index) => (
+                <ul> 
+                      {value.name}
+                      <button onClick={() => this.unfollowThis(value._id, value.name)}  className="btn  btn-primary" style={{marginLeft:10}}>
+                        Unfollow
+                      </button> 
+                </ul>
+                ))
+                : <ul> Following 0 user  </ul> }
+
+            </div>
+            
+            <div style={{  marginTop:20}} > 
               <h3>Recommending Friends</h3>
-               {Object.keys(recommendfriend).length > 1? 
+               {Object.keys(recommendfriend).length > 1?   
                 <ul>
                   {recommendfriend.name}
                  <button  onClick={() => this.followThis(recommendfriend.userId, recommendfriend.name)}  className="btn  btn-primary" style={{marginLeft:10}}>
                     Follow
                 </button> 
                 </ul>: <ul> No recommendation </ul>} 
-
-              </div>
+            </div>
 
             <div>
               <h3>Choose Your Interests</h3>
@@ -167,7 +204,7 @@ class FriendsComponent extends React.Component {
             </div>
 
             <Button  onClick={this.updateInterests} className="btn update interests">
-                Update interests
+                Update
             </Button>
 
             <div style={{marginTop:20}} >
