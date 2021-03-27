@@ -122,19 +122,6 @@ class FriendsComponent extends React.Component {
       });
     };
 
-    createInterest = () => {
-      const oneInterest = this.state.newInterest;
-      addInterest(oneInterest).then (data =>{
-        if (data.error) {
-          this.setState({ error: data.error });
-      } else {
-        this.setState({
-                open: true,
-                msg: `${oneInterest} was added into interest list`  
-            });
-      }
-      });
-    }
 
     onChange = e => {
       this.setState({selectedInterests : e})
@@ -171,7 +158,7 @@ class FriendsComponent extends React.Component {
               </div>
 
             <div style={{ marginTop:20}} > 
-              <h3>Following</h3>
+              <h3>Followings</h3>
               {Object.keys(user.following).length > 0? 
 
                 user.following.map((value, index) => (
@@ -182,12 +169,12 @@ class FriendsComponent extends React.Component {
                       </button> 
                 </ul>
                 ))
-                : <ul> Following 0 user  </ul> }
+                : null }
 
             </div>
             
             <div style={{  marginTop:20}} > 
-              <h3>Recommending Friends</h3>
+              <h3>Suggest people to follow</h3>
                {Object.keys(recommendfriend).length > 1?   
                 <ul>
                   {recommendfriend.name}
@@ -207,17 +194,7 @@ class FriendsComponent extends React.Component {
                 Update
             </Button>
 
-            <div style={{marginTop:20}} >
-              <h3>Add A New Interest</h3>
-              <input 
-                type="text" 
-                id="userInput"  
-                onChange={this.handleChange}
-              />
-              <button onClick={this.createInterest} className="btn add interest" style={{marginLeft:10}}>
-                    Add
-              </button> 
-            </div>
+
             {open && (
                     <div className="alert alert-success">{msg}</div>
                 )}
