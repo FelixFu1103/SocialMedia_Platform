@@ -7,7 +7,7 @@ import { listByUser } from '../helper/posts';
 import { Button, Checkbox,Form, Input } from 'antd';
 import history from './History';
 import { recommendfriend} from '../helper/friends';
-import { getAllInterests, readInterests, assignInterest, addInterest } from '../helper/interest';
+import { getAllInterests, readInterests, assignInterest, unassignInterest } from '../helper/interest';
 
 
 class FriendsComponent extends React.Component {
@@ -70,11 +70,14 @@ class FriendsComponent extends React.Component {
       };
     
 
-    updateInterests = () => {
+    assignInterests = () => {
       const jwt = isAuthenticated();
       const token = jwt.token;
       const userId = jwt.user._id;
       const userInterests = this.state.selectedInterests;
+      console.log("userInterests >>> ", userInterests);
+      console.log("userId >>> ", userId);
+       
       assignInterest(userId, token, userInterests).then(data => {
         if (data.error) {
           console.log(data.error);
@@ -84,6 +87,23 @@ class FriendsComponent extends React.Component {
         window.location.reload();
       })
     };
+
+    unassignInterests = (interestId) => {
+      const jwt = isAuthenticated();
+      const token = jwt.token;
+      const userId = jwt.user._id;
+      
+      console.log("interestId >>>", interestId);
+      unassignInterest(userId, token, interestId).then(data => {
+        if (data.error) {
+          console.log(data.error);
+        } else {
+            console.log("unassigned called");
+        }
+        window.location.reload();
+      })
+    };
+
 
     followThis = (followId, followName) => {
       const jwt = isAuthenticated();
@@ -150,11 +170,15 @@ class FriendsComponent extends React.Component {
             <div style={{ marginLeft:40, marginTop:20}}  vertical layout>
               <div> 
                 <h3>What you like</h3>
-                <ul>
-                    {interests.map((value) => (
-                        <li> {value.title}</li>
-                    ))}
-                </ul>
+                {Object.keys(interests).length > 0?                 
+                interests.map((value) => (        
+                  <ul>
+                    {value.title}
+                    <button  onClick={() => this.unassignInterests(value._id)}  className="btn  btn-primary" style={{marginLeft:10}}>
+                        Remove
+                      </button> 
+                  </ul>       
+                )): null }   
               </div>
 
             <div style={{ marginTop:20}} > 
@@ -174,7 +198,7 @@ class FriendsComponent extends React.Component {
             </div>
             
             <div style={{  marginTop:20}} > 
-              <h3>Suggest people to follow</h3>
+              <h3>People you may want to follow</h3>
                {Object.keys(recommendfriend).length > 1?   
                 <ul>
                   {recommendfriend.name}
@@ -185,13 +209,13 @@ class FriendsComponent extends React.Component {
             </div>
 
             <div>
-              <h3>Choose Your Interests</h3>
+              <h3>Add Your Interests</h3>
                <Checkbox.Group style={{width: "500px"}} options={allInterests.map(column => ({label:column.title, value: column._id}))}  onChange={this.onChange}/>
 
             </div>
 
-            <Button  onClick={this.updateInterests} className="btn update interests">
-                Update
+            <Button  onClick={this.assignInterests} className="btn update interests">
+                Add
             </Button>
 
 

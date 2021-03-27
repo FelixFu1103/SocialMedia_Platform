@@ -43,12 +43,29 @@ npm i heap
 ```
 
 - add interests to a user (need signin ,put the token in header)
-  > Put http://localhost:8080/api/interests
+  > Put http://localhost:8080/api/interests/:userId
 
 ```json
 {
-  "userId": "600663b238348a4de0e3479c",
   "interests": ["60048f9f79688a173976368d", "60048fce79688a173976368e"]
+}
+```
+
+- remove a interest of a user (need signin ,put the token in header)
+  > DELETE http://localhost:8080/api/interests/:userId
+
+```json
+{
+  "interest": "60048f9f79688a173976368d"
+}
+```
+
+- Delete a interest on the website (need signin ,put the token in header)
+  > DELETE http://localhost:8080/api/interests
+
+```json
+{
+  "interest": "60048f9f79688a173976368d"
 }
 ```
 
