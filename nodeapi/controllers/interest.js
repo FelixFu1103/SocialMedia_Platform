@@ -17,6 +17,19 @@ const createInterest = async (req, res) => {
 };
 
 
+const deleteInterest = (req, res) => {
+    let interest = req.body.interest;
+    Interest.findOneAndRemove({_id: interest },(err, interests) => {
+        if (err) {
+            return res.status(400).json({
+                error: err
+            });
+        }
+        res.json({ message: 'Interest deleted successfully' });
+    });
+};
+
+
 const allInterests = (req, res) => {
     Interest.find((err, interests) => {
         if (err) {
@@ -40,11 +53,11 @@ const userInterests = (req, res) => {
     })
 };
 
-// assign interests
-// the second argument of findByIdAndUpdate is the target object
-const assignInterest = (req, res, next) => {
 
-    User.findByIdAndUpdate(req.body.userId, { $set: { interests: req.body.interests} }, (err, result) => {
+
+const assignInterest = (req, res) => {
+    let user = req.profile;
+    User.findByIdAndUpdate(user._id, { $addToSet: { interests:{ $each: req.body.interests} } }, (err, result) => {
         if (err) {
             return res.status(400).json({ error: err });
         } 
@@ -53,7 +66,20 @@ const assignInterest = (req, res, next) => {
 
 };
 
+const unassignInterest = (req, res) => {
+    let user = req.profile;
+    User.findByIdAndUpdate(user._id, { $pull: { interests: req.body.interest } }, (err, result) => {
+        if (err) {
+            return res.status(400).json({ error: err });
+        }
+        return res.json({message: 'Interest removed'});
+    });
+};
+
+
 exports.createInterest = createInterest
 exports.allInterests = allInterests
 exports.userInterests = userInterests
 exports.assignInterest = assignInterest
+exports.unassignInterest = unassignInterest
+exports.deleteInterest = deleteInterest

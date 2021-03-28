@@ -26,7 +26,6 @@ router.get("/users", allUsers);
 router.get("/user/:userId", requireSignin, getUser);
 router.put("/user/:userId", requireSignin, hasAuthorization, updateUser);
 router.delete("/user/:userId", requireSignin, hasAuthorization, deleteUser);
-router.get("/user/:userId/interests", requireSignin, hasAuthorization, editInterests);
 router.get("/user/:userId/recommendation", requireSignin, recommend);
 // photo
 router.get("/user/photo/:userId", userPhoto);
