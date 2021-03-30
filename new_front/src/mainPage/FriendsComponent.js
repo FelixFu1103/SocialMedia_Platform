@@ -1,13 +1,13 @@
 import React from 'react';
 import { isAuthenticated, signout } from "../helper";
 import {withRouter } from 'react-router-dom';
-import { read } from '../helper/user';
+import { read, follow, unfollow} from '../helper/user';
 import DefaultProfile from "../images/avatar.jpg";
 import { listByUser } from '../helper/posts';
 import { Button, Checkbox,Form, Input } from 'antd';
 import history from './History';
-import { recommendfriend, follow } from '../helper/friends';
-import { getAllInterests, readInterests, assignInterest, addInterest } from '../helper/interest';
+import { recommendfriend} from '../helper/friends';
+import { getAllInterests, readInterests, assignInterest, unassignInterest } from '../helper/interest';
 
 
 class FriendsComponent extends React.Component {
@@ -36,6 +36,7 @@ class FriendsComponent extends React.Component {
             this.setState({ redirectToSignin: true });
           } else {
             this.setState({ user: data});
+            console.log("data >>>" , data);
           }
         });
 
@@ -69,12 +70,15 @@ class FriendsComponent extends React.Component {
       };
     
 
-    updateInterests = () => {
+    assignInterests = () => {
       const jwt = isAuthenticated();
       const token = jwt.token;
       const userId = jwt.user._id;
       //const userInterests = this.state.changedInterests;
       const userInterests = this.state.selectedInterests;
+      console.log("userInterests >>> ", userInterests);
+      console.log("userId >>> ", userId);
+       
       assignInterest(userId, token, userInterests).then(data => {
         if (data.error) {
           console.log(data.error);
@@ -84,6 +88,23 @@ class FriendsComponent extends React.Component {
         window.location.reload();
       })
     };
+
+    unassignInterests = (interestId) => {
+      const jwt = isAuthenticated();
+      const token = jwt.token;
+      const userId = jwt.user._id;
+      
+      console.log("interestId >>>", interestId);
+      unassignInterest(userId, token, interestId).then(data => {
+        if (data.error) {
+          console.log(data.error);
+        } else {
+            console.log("unassigned called");
+        }
+        window.location.reload();
+      })
+    };
+
 
     followThis = (followId, followName) => {
       const jwt = isAuthenticated();
@@ -100,26 +121,29 @@ class FriendsComponent extends React.Component {
                 msg: `Following ${followName}`
             });
         }
+        window.location.reload();
       });
     };
 
-    // componentDidMount() {
-    //   const userId = isAuthenticated().user._id;
-    //   this.init(userId);
     
-    createInterest = () => {
-      const oneInterest = this.state.newInterest;
-      addInterest(oneInterest).then (data =>{
+    unfollowThis = (unfollowId, unfollowName) => {
+      const jwt = isAuthenticated();
+      const token = jwt.token;
+      const userId = jwt.user._id;
+
+      unfollow(userId, token, unfollowId).then(data => {
         if (data.error) {
-          this.setState({ error: data.error });
-      } else {
-        this.setState({
+            this.setState({ error: data.error });
+        } else {
+            this.setState({
                 open: true,
-                msg: `${oneInterest} was added into interest list`  
+                msg: `Unfollowing ${unfollowName}`
             });
-      }
+        }
+        window.location.reload();
       });
-    }
+    };
+
 
     onChange = e => {
       this.setState({selectedInterests : e})
@@ -185,17 +209,7 @@ class FriendsComponent extends React.Component {
                 Update interests
             </Button> 
 
-            <div style={{marginTop:20}} >
-              <h3>Add A New Interest</h3>
-              <input 
-                type="text" 
-                id="userInput"  
-                onChange={this.handleChange}
-              />
-              <button onClick={this.createInterest} className="btn add interest" style={{marginLeft:10}}>
-                    Add
-              </button> 
-            </div>
+
             {open && (
                     <div className="alert alert-success">{msg}</div>
                 )}

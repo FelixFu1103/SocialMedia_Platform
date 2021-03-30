@@ -37,8 +37,26 @@ export const assignInterest = (userId, token, userInterests) => {
             Authorization: `Bearer ${token}`
         },
         body:  JSON.stringify(  {
-            "userId" : userId,
             "interests" :userInterests
+            })
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => console.log(err));
+};
+
+
+export const unassignInterest = (userId, token, removeInterest) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/interests/${userId}`, {
+        method: "DELETE",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body:  JSON.stringify(  {
+            "interest" :removeInterest
             })
     })
         .then(response => {
