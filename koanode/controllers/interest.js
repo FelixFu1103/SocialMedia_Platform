@@ -46,16 +46,21 @@ let interest = {
         console.log("inside assign interest");
         console.log("ctx.request.body: ", JSON.stringify(ctx.request.body));
         id = getId(ctx, 11);
+        console.log("user id: ", id);
         let interests = JSON.stringify(ctx.request.body.interests);
         let correctTypedInterests = JSON.parse(interests);
         console.log("interests__: ", correctTypedInterests);
-        User.findByIdAndUpdate(id, { $set: { interests: correctTypedInterests} }) 
-            .then(res => {
-                console.log("success update!")
-            })
-            .catch(err => console.log(err));
+        const updatedinterests = 
+        await User.findByIdAndUpdate(id, { $addToSet: { interests:{ $each: correctTypedInterests} } }) 
+                    .exec();
+        ctx.response.body = updatedinterests
     
+    },
+    deleteInterest : async(ctx,next) => {
+        
     }
+
+
     
 };
 

@@ -17,4 +17,6 @@ router.put('/interests/:userId', jwt, interest.assignInterest); // working
 // any route containing :userId, our app will first execute userByID()
 // router.param("userId", user.userById);
 
+router.delete('/interests', jwt, interest.deleteInterest);
+// router.delete('/interests/:userId', jwt, interest.unassignInterest);
 module.exports = router;

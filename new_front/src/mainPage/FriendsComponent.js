@@ -49,11 +49,13 @@ class FriendsComponent extends React.Component {
           });
         
         recommendfriend(userId, token).then(data => {
+
             if (data.error) {
               console.log(data.error);
             } else {
               if (data.jindex > 0.2) {
                 this.setState({recommendfriend: data});
+                console.log("recommendfriend data: ", {recommendfriend: data});
               } else {
                 console.log("No friends for recommendation");
               }
@@ -110,7 +112,7 @@ class FriendsComponent extends React.Component {
       const jwt = isAuthenticated();
       const token = jwt.token;
       const userId = jwt.user._id;
-
+      console.log("follow id: ", followId);
     
       follow(userId, token, followId).then(data => {
         if (data.error) {
@@ -164,58 +166,68 @@ class FriendsComponent extends React.Component {
     }
     
     render(){
-        // const interests = this.state.user.interests;
-        //const {user, interests, recommendfriend, allInterests} = this.state; 
-        const {user, interests, recommendfriend, allInterests, open, msg} = this.state;     
+      // const interests = this.state.user.interests;
+      const {user, interests, recommendfriend, allInterests, open, msg} = this.state;     
 
-        // const interests = user.interests;   
-        return (
-            <div style={{ marginLeft:40, marginTop:20}}  vertical layout>
-              <div> 
-                <h3>What you like</h3>
+      // const interests = user.interests;   
+      return (
+          <div style={{ marginLeft:40, marginTop:20}}  vertical layout>
+            <div> 
+              <h3>What you like</h3>
+              {Object.keys(interests).length > 0?                 
+              interests.map((value) => (        
                 <ul>
-                  {this.state.interests.map((value, index) => {
-                        return <li> {value.title}</li>
-                    })}
-                </ul>
-              </div>
-            <div>
-              <div style={{  marginTop:20}} >
-              <h3>Recommending Friends</h3>
+                  {value.title}
+                  <button  onClick={() => this.unassignInterests(value._id)}  className="btn  btn-primary" style={{marginLeft:10}}>
+                      Remove
+                    </button> 
+                </ul>       
+              )): null }   
+            </div>
+
+          <div style={{ marginTop:20}} > 
+            <h3>Followings</h3>
+            {Object.keys(user.following).length > 0? 
+
+              user.following.map((value, index) => (
+              <ul> 
+                    {value.name}
+                    <button onClick={() => this.unfollowThis(value._id, value.name)}  className="btn  btn-primary" style={{marginLeft:10}}>
+                      Unfollow
+                    </button> 
+              </ul>
+              ))
+              : null }
+
+          </div>
+          
+          <div style={{  marginTop:20}} > 
+            <h3>People you may want to follow</h3>
+             {Object.keys(recommendfriend).length > 1?   
               <ul>
                 {recommendfriend.name}
-              </ul>
-            </div>
-               {Object.keys(recommendfriend).length > 1? 
-                <ul>
-                  {recommendfriend.name}
-
-                 <button  onClick={() => this.followThis(recommendfriend.userId, recommendfriend.name)}  className="btn  btn-primary" style={{marginLeft:10}}>
-                    Follow
-                </button> 
-                </ul>: <ul> No recommendation </ul>} 
-
-              </div> 
-
-            <div>
-            <h3>Edit Your Interests</h3>
-              <Checkbox.Group style={{width: "500px"}} options={allInterests.map(column => ({label:column.title, value: column._id}))}  onChange={this.onChange}/>
-              <h3>Choose Your Interests</h3>
-               <Checkbox.Group style={{width: "500px"}} options={allInterests.map(column => ({label:column.title, value: column._id}))}  onChange={this.onChange}/>
-
-            </div>
-
-            <Button  onClick={this.updateInterests} className="btn update interests">
-                Update interests
-            </Button> 
-
-
-            {open && (
-                    <div className="alert alert-success">{msg}</div>
-                )}
+               <button  onClick={() => this.followThis(recommendfriend.userId, recommendfriend.name)}  className="btn  btn-primary" style={{marginLeft:10}}>
+                  Follow
+              </button> 
+              </ul>: <ul> No recommendation </ul>} 
           </div>
-        )
-    }
-}
 
+          <div>
+            <h3>Add Your Interests</h3>
+             <Checkbox.Group style={{width: "500px"}} options={allInterests.map(column => ({label:column.title, value: column._id}))}  onChange={this.onChange}/>
+
+          </div>
+
+          <Button  onClick={this.assignInterests} className="btn update interests">
+              Add
+          </Button>
+
+
+          {open && (
+                  <div className="alert alert-success">{msg}</div>
+              )}
+        </div>
+      )
+  }
+}
 export default withRouter(FriendsComponent);
