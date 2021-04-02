@@ -119,10 +119,10 @@ let controller = {
         //
         console.log("Inside recommend");
         id = getId2(ctx, 6, 30);
-        console.log("id2: ", id);
+        console.log("This is the user id: ", id);
 
         const user = await User.findById(id).exec();
-        console.log("user__interests: ", user.interests);
+        console.log("user2 ", user);
         var userInterest = new Array();
 
         user.interests.forEach(function (value) {
@@ -131,14 +131,14 @@ let controller = {
             console.log("userInterest: ", userInterest)
         });
 
-        
+        let following = user.following;
         var heap = new Heap(function(a,b) {
             return b.jindex - a.jindex;
         });
         const users = 
-                await User.find({_id: {$ne: user._id}})
+                await User.find({_id: {$nin: following,  $ne: user._id}})
                         .select('_id name interests').exec();
-            console.log("user >>>", users);
+            console.log("User >>>", users);
             users.forEach(function (value) {
                 console.log("userName >>",typeof (value.name));
                 console.log("req.profile._id >>> " , typeof(user._id));
@@ -149,7 +149,7 @@ let controller = {
                     interestOfuser.push(oneitem.toString());
                 })
     
-                heap.push({ "name" : value.name , "jindex" : jaccard.index(userInterest,interestOfuser)});
+                heap.push({ "name" : value.name , "userId" : value._id, "jindex" : jaccard.index(userInterest,interestOfuser)});
             })
             console.log("heap top >>> ", heap.peek());
     
@@ -213,38 +213,38 @@ let controller = {
 
         console.log("UserId: ", userId);
         console.log("Following userid: ", followId);
-        // following userId: ctx.request.body.followId
-        //await User.findByIdAndUpdate()
-        // await User.findByIdAndUpdate(userId, { $push: { following: followId } })
-        //                 .populate('following', '_id name')
-        //                 .populate('followers', '_id name').exec();
-        // //ctx.body = res;
-        // const res = await User.findById(followId).exec();
-        // console.log("result in addfollowing: ", res);
-        // ctx.body = res;
-        // next();
+        //following userId: ctx.request.body.followId
+        await User.findByIdAndUpdate()
+        await User.findByIdAndUpdate(userId, { $push: { following: followId } })
+                        .populate('following', '_id name')
+                        .populate('followers', '_id name').exec();
+        //ctx.body = res;
+        const res = await User.findById(followId).exec();
+        console.log("result in addfollowing: ", res);
+        ctx.body = res;
+        next();
     },
     
     addFollower : async (ctx, next) => {
         console.log("Inside addFollower");
         console.log("req.body.userId: ", JSON.stringify(ctx.request.body));
-        // let followId = getuserInfo.getUserFollowId(ctx);
-        // let userId = getuserInfo.getUserId(ctx);
-        // await User.findByIdAndUpdate(followId, { $push: { followers: userId } }, { new: true })
-        //     .populate('following', '_id name')
-        //     .populate('followers', '_id name')
-        //     .exec();
+        let followId = getuserInfo.getUserFollowId(ctx);
+        let userId = getuserInfo.getUserId(ctx);
+        await User.findByIdAndUpdate(followId, { $push: { followers: userId } }, { new: true })
+            .populate('following', '_id name')
+            .populate('followers', '_id name')
+            .exec();
 
-        // // should go to the followed user page
-        // const res = await User.findById(followId).exec();
-        // console.log("result in addfollower: ", res);
-        // ctx.body = res;
+        // should go to the followed user page
+        const res = await User.findById(followId).exec();
+        console.log("result in addfollower: ", res);
+        ctx.body = res;
     },
     
     // remove follow unfollow
     removeFollowing : async (ctx, next) => {
         // pull: take it out 
-        //let unfollowId = getuserInfo.getUserunFollowId(ctx);
+        let unfollowId = getuserInfo.getUserunFollowId(ctx);
         let userId = getuserInfo.getUserId(ctx);
         console.log("userId: ", userId);
         //console.log("followInfoJson: ", followInfoJson);
@@ -252,29 +252,29 @@ let controller = {
         let postInfo = JSON.stringify(ctx.request.body);
         let postInfoJson = JSON.parse(postInfo);
         console.log("postInfoJson: ", postInfoJson);
-        // await User.findByIdAndUpdate(userId, { $pull: { following: unfollowId } })
-        //         .populate('following', '_id name')
-        //         .populate('followers', '_id name')
-        //         .exec();
-        // const res = await User.findById(unfollowId).exec();
-        // console.log("result in removefollowing: ", res);
-        // ctx.body = res;
+        await User.findByIdAndUpdate(userId, { $pull: { following: unfollowId } })
+                .populate('following', '_id name')
+                .populate('followers', '_id name')
+                .exec();
+        const res = await User.findById(unfollowId).exec();
+        console.log("result in removefollowing: ", res);
+        ctx.body = res;
 
-        // next();
+        next();
     },
     
     removeFollower : async (ctx, next) => {
         let unfollowId = getuserInfo.getUserunFollowId(ctx);
         let userId = getuserInfo.getUserId(ctx);
         //console.log("followInfoJson: ", followInfoJson);
-        // await User.findByIdAndUpdate(unfollowId, { $pull: { followers: userId } }, { new: true })
-        //     .populate('following', '_id name')
-        //     .populate('followers', '_id name')
-        //     .exec();
-        // const res = await User.findById(unfollowId).exec();
+        await User.findByIdAndUpdate(unfollowId, { $pull: { followers: userId } }, { new: true })
+            .populate('following', '_id name')
+            .populate('followers', '_id name')
+            .exec();
+        const res = await User.findById(unfollowId).exec();
 
-        // console.log("result in removefollower: ", res);
-        // ctx.body = res;
+        console.log("result in removefollower: ", res);
+        ctx.body = res;
     },
     
     

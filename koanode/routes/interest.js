@@ -18,5 +18,6 @@ router.put('/interests/:userId', jwt, interest.assignInterest); // working
 // router.param("userId", user.userById);
 
 router.delete('/interests', jwt, interest.deleteInterest);
-// router.delete('/interests/:userId', jwt, interest.unassignInterest);
+// delete method can not pass data in koa, so use post methood
+router.post('/interests/:userId', jwt, interest.unassignInterest);
 module.exports = router;

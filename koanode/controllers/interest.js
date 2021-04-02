@@ -58,10 +58,21 @@ let interest = {
     },
     deleteInterest : async(ctx,next) => {
         
+    },
+    unassignInterest : async(ctx, id, next) => {
+        console.log("inside unassignInterest");
+        console.log("id: ", JSON.stringify(id));
+        id = getId(ctx, 11);
+        console.log("user id: ", id);
+        //let interest = JSON.stringify(ctx.);
+        let interestId = JSON.stringify(ctx.request.body.interests);
+        let correctTypedInterestId = JSON.parse(interestId);
+
+        const updated = 
+        await User.findByIdAndUpdate(id, { $pull: { interests:  correctTypedInterestId} }) 
+                  .exec();
+        ctx.response.body = updated
     }
-
-
-    
 };
 
 module.exports = interest;
