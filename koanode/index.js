@@ -26,6 +26,7 @@ const http = require('http');
 const app = new koa();
 
 app.use(cors());
+//app.use(cors());
 const userRoute = require('./routes/user');
 const postRoute = require('./routes/post');
 const authRoute = require('./routes/auth');
@@ -39,17 +40,19 @@ mongoose.connection.on('error', err => {
     console.log(`DB connection error: ${err.message}`);
 });
 
-app.use(async (ctx, next) => {
-    ctx.set('Access-Control-Allow-Origin', '*');
-    ctx.set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
-    await next();
-});
+// app.use(async (ctx, next) => {
+//     console.log("ctx.request: ", ctx.request);
+//     var header = ctx.request
+//     header.set('Access-Control-Allow-Origin', '*');
+//     // ctx.set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
+//     await next();
+// });
 
 // var options = {
 //     origin: '*'
 // };
 
-// app.use(cors(options));
+
 app.use(morgan('dev'));
 app.use(koaBody({
     multipart: true,

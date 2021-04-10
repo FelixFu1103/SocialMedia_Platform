@@ -41,8 +41,10 @@ let controllers = {
                 const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET);
                 console.log("token: ", token);
                 // // put the token as 'ck' in cookie with expiry date
-
-                ctx.cookies.set('ck', token, { expire: new Date() + 9999 });
+                console.log("cookie: ", ctx.cookies.get('_ga'));
+                ctx.cookies.set('ck', token, { expire: new Date() + 999 }, {overwrite: true});
+                console.log("new cookie: ", ctx.cookies.get('_ga'));
+                // console.log("new cookie: ", ctx.cookies.get('ck'));
                 // // return back responses to front end
                 const { _id, email, name, role } = user;
                 // signin
