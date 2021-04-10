@@ -13,6 +13,9 @@ const koasession = require('koa-session');
 const cors = require('koa-cors');
 const Router = require('koa-router');
 const router = new Router();
+//const cors = require('@koa/cors');
+
+
 
 
 const dotenv = require('dotenv');
@@ -22,6 +25,7 @@ const http = require('http');
 
 const app = new koa();
 
+app.use(cors());
 const userRoute = require('./routes/user');
 const postRoute = require('./routes/post');
 const authRoute = require('./routes/auth');
@@ -35,9 +39,17 @@ mongoose.connection.on('error', err => {
     console.log(`DB connection error: ${err.message}`);
 });
 
+app.use(async (ctx, next) => {
+    ctx.set('Access-Control-Allow-Origin', '*');
+    ctx.set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
+    await next();
+});
 
+// var options = {
+//     origin: '*'
+// };
 
-
+// app.use(cors(options));
 app.use(morgan('dev'));
 app.use(koaBody({
     multipart: true,
@@ -50,7 +62,6 @@ app.use(koaBody({
 app.use(bodyParser());
 //app.use(cookieParser());
 app.use(koaValidator());
-app.use(cors());
 
 // app.use(koasession(app));
 // router middleware

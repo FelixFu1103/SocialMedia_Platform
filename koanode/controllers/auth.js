@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const koaJwt = require('koa-jwt');
+//const koaJwt = require('koa-jwt');
+//const jwt = require('../middleware/jwt');
 const User = require('../models/user');
 const _ = require('lodash');
 
@@ -35,10 +36,10 @@ let controllers = {
             } else if (!user.authenticate(password)) {     // if user existed, check if plain text password match with encrypted password
                 ctx.response.body = ({error :  'Email and password do not match'});
             } else {
-                console.log("sign up");
+                //console.log("sign up");
                 // generate a token with user id and secret
                 const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET);
-                
+                console.log("token: ", token);
                 // // put the token as 'ck' in cookie with expiry date
 
                 ctx.cookies.set('ck', token, { expire: new Date() + 9999 });
