@@ -10,10 +10,10 @@ const cookieParser = require('koa-cookie-parser');
 const koaValidator = require('koa-middle-validator');
 const koasession = require('koa-session');
 // const expressValidator = require('express-validator');
-const cors = require('koa-cors');
+//const cors = require('koa-cors');
 const Router = require('koa-router');
 const router = new Router();
-//const cors = require('@koa/cors');
+const cors = require('@koa/cors');
 
 
 
