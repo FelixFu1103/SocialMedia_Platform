@@ -55,16 +55,13 @@ app.use(koaBody({
     multipart: true,
     keepExtensions : true,
     formidable: {
-        maxFileSize: 200*1024*1024    // 设置上传文件大小最大限制，默认2M
+        maxFileSize: 200*1024*1024    
     }
 }));
-// app.use(formidable());
+
 app.use(bodyParser());
-//app.use(cookieParser());
 app.use(koaValidator());
 
-// app.use(koasession(app));
-// router middleware
 
 app.use(userRoute.routes())
   .use(userRoute.allowedMethods())
