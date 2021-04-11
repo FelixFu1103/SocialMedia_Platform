@@ -42,7 +42,7 @@ let controllers = {
                 console.log("token: ", token);
                 // // put the token as 'ck' in cookie with expiry date
                 console.log("cookie: ", ctx.cookies.get('_ga'));
-                ctx.cookies.set('ck', token, { expire: new Date() + 999 }, {overwrite: true});
+                //ctx.cookies.set('ck', token, { expire: new Date() + 999 }, {overwrite: true});
                 console.log("new cookie: ", ctx.cookies.get('_ga'));
                 // console.log("new cookie: ", ctx.cookies.get('ck'));
                 // // return back responses to front end
@@ -55,7 +55,7 @@ let controllers = {
 
 
     logout : async (ctx, next) => {
-        ctx.cookies.set('ck', null);
+        //ctx.cookies.set('ck', null);
         ctx.response.body = ({ message: 'Logout success!' });
     }
 
