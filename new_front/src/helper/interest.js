@@ -46,17 +46,16 @@ export const assignInterest = (userId, token, userInterests) => {
         .catch(err => console.log(err));
 };
 
-
 export const unassignInterest = (userId, token, removeInterest) => {
     return fetch(`${process.env.REACT_APP_API_URL}/interests/${userId}`, {
-        method: "POST",
+        method: "DELETE",
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`
         },
         body:  JSON.stringify(  {
-            "interests" :removeInterest
+            "interest" :removeInterest
             })
     })
         .then(response => {
@@ -64,7 +63,6 @@ export const unassignInterest = (userId, token, removeInterest) => {
         })
         .catch(err => console.log(err));
 };
-
 
 export const addInterest = (newInterest) => {
     return fetch(`${process.env.REACT_APP_API_URL}/interests`, {
