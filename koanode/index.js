@@ -81,17 +81,29 @@ http.createServer(app.callback()).listen(port, () => console.log(`A Node Js API 
 
 //websocket
 const WebSocketServer = require('websocket').server;
-const ws =  new WebSocketServer({httpServer:http.createServer(app.callback())});
+const ws = new WebSocketServer({httpServer:http.createServer(app.callback())});
+
 //connect
-ws.on('request',(req)=>{
-    const userInfo = req.resource.replace('/','')
-    const connection = req.accept(null,req.origin)
+// ws.on('request',(req)=>{
+//     const userInfo = req.resource.replace('/','')
+//     console.log("req: ", req);
+//     const connection = req.accept(null,req.origin)
+//     connection.on('message',function(msg){
+//         let data = JSON.parse(msg.utf8Data)
+//         ws.connections.map((item,index)=>{
+//             item.send(JSON.stringify(data))
+//         })
+// })
+ws.on('request',(ctx)=>{
+    //const userInfo = ctx.resource.replace('/','')
+    console.log("ctx: ", ctx);
+    const connection = req.accept(null,ctx.origin)
     connection.on('message',function(msg){
         let data = JSON.parse(msg.utf8Data)
         ws.connections.map((item,index)=>{
             item.send(JSON.stringify(data))
         })
-    })
+})
 
     //break
     connection.on('close',function(reasonCode,description){
