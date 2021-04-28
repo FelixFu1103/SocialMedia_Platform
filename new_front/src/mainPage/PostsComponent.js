@@ -1,5 +1,6 @@
 import React, {createElement} from 'react';
 import SinglePostComponent from './SinglePostComponent';
+import { Pagination, Col, Row} from 'antd';
 import {list} from '../helper/posts';
 
 class PostsComponent extends React.Component {
@@ -21,7 +22,7 @@ class PostsComponent extends React.Component {
     render(){
         return (
             <div style={{marginLeft:50, marginTop:30}}>
-                {this.state.posts.map((post)=><SinglePostComponent post={post}/>)}
+                {this.state.posts.map((post)=>(<Row><SinglePostComponent post={post}/></Row>))}
             </div>    
         )
     }

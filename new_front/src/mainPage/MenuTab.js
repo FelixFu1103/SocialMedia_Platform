@@ -8,7 +8,6 @@ class MenuTab extends React.Component {
     render() {
         return (
             <div>
-                {console.log(isAuthenticated())}
                 {isAuthenticated() ? <MenuComponent/>:<LoginComponent/>}
             </div>
         )

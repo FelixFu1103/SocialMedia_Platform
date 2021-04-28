@@ -4,7 +4,7 @@ import {withRouter } from 'react-router-dom';
 import { read, follow, unfollow} from '../helper/user';
 import DefaultProfile from "../images/avatar.jpg";
 import { listByUser } from '../helper/posts';
-import { Button, Checkbox,Form, Input } from 'antd';
+import { Button, Checkbox,Row, Col} from 'antd';
 import history from './History';
 import { recommendfriend} from '../helper/friends';
 import { getAllInterests, readInterests, assignInterest, unassignInterest } from '../helper/interest';
@@ -170,30 +170,36 @@ class FriendsComponent extends React.Component {
             <div style={{ marginLeft:40, marginTop:20}}  vertical layout>
               <div> 
                 <h3>What you like</h3>
-                {Object.keys(interests).length > 0?                 
-                interests.map((value) => (        
-                  <ul>
-                    {value.title}
-                    <button  onClick={() => this.unassignInterests(value._id)}  className="btn  btn-primary" style={{marginLeft:10}}>
-                        Remove
-                      </button> 
-                  </ul>       
-                )): null }   
+                <Row>
+                  {Object.keys(interests).length > 0?                 
+                  interests.map((value) => (        
+                    <ul>
+                      {value.title}
+                      <Button  type='primary' onClick={() => this.unassignInterests(value._id)}  className="btn  btn-primary" style={{marginLeft:10}}>
+                          Remove
+                        </Button> 
+                    </ul>       
+                  )): null }   
+                </Row>
+                
               </div>
 
             <div style={{ marginTop:20}} > 
               <h3>Followings</h3>
+              <Row>
               {Object.keys(user.following).length > 0? 
 
                 user.following.map((value, index) => (
                 <ul> 
                       {value.name}
-                      <button onClick={() => this.unfollowThis(value._id, value.name)}  className="btn  btn-primary" style={{marginLeft:10}}>
+                      <Button type='primary' onClick={() => this.unfollowThis(value._id, value.name)}  className="btn  btn-primary" style={{marginLeft:10}}>
                         Unfollow
-                      </button> 
+                      </Button> 
                 </ul>
                 ))
                 : null }
+              </Row>
+              
 
             </div>
             
@@ -202,9 +208,9 @@ class FriendsComponent extends React.Component {
                {Object.keys(recommendfriend).length > 1?   
                 <ul>
                   {recommendfriend.name}
-                 <button  onClick={() => this.followThis(recommendfriend.userId, recommendfriend.name)}  className="btn  btn-primary" style={{marginLeft:10}}>
+                 <Button  type='primary' onClick={() => this.followThis(recommendfriend.userId, recommendfriend.name)}  className="btn  btn-primary" style={{marginLeft:10}}>
                     Follow
-                </button> 
+                </Button> 
                 </ul>: <ul> No recommendation </ul>} 
             </div>
 

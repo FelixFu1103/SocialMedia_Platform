@@ -8,12 +8,14 @@ import PostsComponent from './mainPage/PostsComponent';
 import NewPostComponent from './mainPage/NewPostComponent';
 import EccChat from './mainPage/EccChat';
 import NoEccChat from './mainPage/NoEccChat';
+import RegisterComponent from './mainPage/RegisterComponent';
 import {Row} from 'antd';
 
 const MainRouter = () => (
     <Route>
         <Row>
             <Route component={MenuTab}/>
+            <Route exact path="/register" component={RegisterComponent}/>
             <Route exact path="/profile/:userId" component={ProfileComponent} />
             <Route exact path="/users" component={UsersComponent} />
             <Route exact path="/recent_posts" component={PostsComponent} />
