@@ -4,7 +4,7 @@ import {withRouter } from 'react-router-dom';
 import { read, follow, unfollow} from '../helper/user';
 import DefaultProfile from "../images/avatar.jpg";
 import { listByUser } from '../helper/posts';
-import { Button, Checkbox,Row, Col} from 'antd';
+import { Button, Checkbox,Row, Col, Tag} from 'antd';
 import history from './History';
 import { recommendfriend} from '../helper/friends';
 import { getAllInterests, readInterests, assignInterest, unassignInterest } from '../helper/interest';
@@ -169,53 +169,37 @@ class FriendsComponent extends React.Component {
         return (
             <div style={{ marginLeft:40, marginTop:20}}  vertical layout>
               <div> 
-                <h3>What you like</h3>
+                <h3>Interests list</h3>
                 <Row>
                   {Object.keys(interests).length > 0?                 
                   interests.map((value) => (        
-                    <ul>
-                      {value.title}
-                      <Button  type='primary' onClick={() => this.unassignInterests(value._id)}  className="btn  btn-primary" style={{marginLeft:10}}>
-                          Remove
-                        </Button> 
-                    </ul>       
+                      <Tag style = {{marginLeft: 30}} closable onClose={() => this.unassignInterests(value._id)}>
+                        {value.title}
+                      </Tag>
                   )): null }   
                 </Row>
                 
               </div>
 
             <div style={{ marginTop:20}} > 
-              <h3>Followings</h3>
+              <h3>Following friends, click to unfollow</h3>
               <Row>
               {Object.keys(user.following).length > 0? 
-
                 user.following.map((value, index) => (
-                <ul> 
-                      {value.name}
-                      <Button type='primary' onClick={() => this.unfollowThis(value._id, value.name)}  className="btn  btn-primary" style={{marginLeft:10}}>
-                        Unfollow
-                      </Button> 
-                </ul>
-                ))
-                : null }
+                <Tag style={{marginLeft:30}} onClick={() => this.unfollowThis(value._id, value.name)} color="success">{value.name}</Tag>
+                )): null }
               </Row>
-              
-
             </div>
             
             <div style={{  marginTop:20}} > 
-              <h3>People you may want to follow</h3>
+              <h3>Recommend Friends, click to follow</h3>
                {Object.keys(recommendfriend).length > 1?   
-                <ul>
-                  {recommendfriend.name}
-                 <Button  type='primary' onClick={() => this.followThis(recommendfriend.userId, recommendfriend.name)}  className="btn  btn-primary" style={{marginLeft:10}}>
-                    Follow
-                </Button> 
-                </ul>: <ul> No recommendation </ul>} 
+                  <Tag style={{marginLeft:30}} color="processing" onClick={() => this.followThis(recommendfriend.userId, recommendfriend.name)} >{recommendfriend.name}</Tag>
+                : <ul> No recommendation </ul>} 
             </div>
 
-            <div>
-              <h3>Add Your Interests</h3>
+            <div style={{marginTop:30}}>
+              <h3>Update Your Interests</h3>
                <Checkbox.Group style={{width: "500px"}} options={allInterests.map(column => ({label:column.title, value: column._id}))}  onChange={this.onChange}/>
 
             </div>
