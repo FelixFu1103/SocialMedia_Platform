@@ -42,10 +42,5 @@ router.get("/user/:userId/recommendation", jwt, users.recommend);
 // // photo
 router.get("/user/photo/:userId", users.getUserPhoto); //working 
 
-// // who to follow
-// router.get("/user/findpeople/:userId", requireSignin, findPeople);
-
-// // any route containing :userId, our app will first execute userByID()
-//router.param("userId", users.userById);
 
 module.exports = router;

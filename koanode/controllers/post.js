@@ -119,36 +119,6 @@ let controller = {
         next();
     },
     
-    // updatePost = (req, res, next) => {
-    //     let form = new formidable.IncomingForm();
-    //     form.keepExtensions = true;
-    //     form.parse(req, (err, fields, files) => {
-    //         if (err) {
-    //             return res.status(400).json({
-    //                 error: 'Photo could not be uploaded'
-    //             });
-    //         }
-    //         // save post
-    //         let post = req.post;
-    //         post = _.extend(post, fields);
-    //         post.updated = Date.now();
-    
-    //         if (files.photo) {
-    //             post.photo.data = fs.readFileSync(files.photo.path);
-    //             post.photo.contentType = files.photo.type;
-    //         }
-    
-    //         post.save((err, result) => {
-    //             if (err) {
-    //                 return res.status(400).json({
-    //                     error: err
-    //                 });
-    //             }
-    //             res.json(post);
-    //         });
-    //     });
-    // },
-    
     
     // need to remove promise
     getPostPhoto : async (ctx, next, id) => {
@@ -203,15 +173,6 @@ let controller = {
         
         const post2 =  await Post.find();
         console.log("all posts after deletion: ", post2);
-        // let post = await Post.findOneAndDelete({_id : id});
-        // console.log("post to delete: ", post);
-        // post.remove((err, post) => {
-        //     if (err) {
-        //         console.log("err: ", err);
-        //     }
-        //     ctx.response.body = "delete successfully";
-        //     console.log("delete successfully");
-        // });
     },
     
     like : async(ctx, next) => {
@@ -269,37 +230,7 @@ let controller = {
             ctx.body = post;
     }
     
-    
-    // updateComment = (req, res) => {
-    //     let comment = req.body.comment;
-    
-    //     Post.findByIdAndUpdate(req.body.postId, { $pull: { comments: { _id: comment._id } } })
-    //         .exec((err, result) => {
-    //             if (err) {
-    //                 console.log("No comment found");
-    //                 return res.status(400).json({
-    //                     error: err
-    //                 });
-    //             } else {
-    //                 Post.findByIdAndUpdate(
-    //                     req.body.postId,
-    //                     { $push: { comments: comment, updated: new Date() } },
-    //                     { new: true }
-    //                 )
-    //                     .populate('comments.postedBy', '_id name')
-    //                     .populate('postedBy', '_id name')
-    //                     .exec((err, result) => {
-    //                         if (err) {
-    //                             return res.status(400).json({
-    //                                 error: err
-    //                             });
-    //                         } else {
-    //                             res.json(result);
-    //                         }
-    //                     });
-    //             }
-    //     });
-    // }
+
 };
 
 

@@ -4,18 +4,7 @@ const _ = require('lodash');
 const { UserRefreshClient } = require('google-auth-library');
 const getId = require('../middleware/id')
 let interest = {
-    // const createInterest = async (req, res) => {
-    //     const interestExists = await Interest.findOne({ title: req.body.title });
-    //     if (interestExists)
-    //         return res.status(403).json({
-    //             error: 'The interest exists!'
-    //         });
-        
-    //     const interest = await new Interest(req.body);
-    //     await interest.save();
-    //     res.status(200).json({ message: 'Interest created' });
-    // };
-    
+
     
     allInterests : async(ctx, next) => {
         //console.log("ctx: ", ctx);

@@ -10,27 +10,7 @@ const getId2 = require('../middleware/id2')
 const getuserInfo = require('../middleware/getpostInfo');
 
 let controller = {
-    
-    userById: async (ctx, next, id) => {
-        //console.log("id: ", id);
-        // let id = ctx;
-        // let userProfile;
-        // console.log("ctx ", ctx);
-        // const user = await User.findById(ctx)
-        //     // populate followers and following users array
-        //     .populate('following', '_id name')
-        //     .populate('followers', '_id name')
-        //     .then(user => {
-        //         ctx.body = user
-        //         console.log("post: ", user);
-        //         controller.getCurrentUser(user);
-        //     })
-        //     .catch(err => console.log(err));
-        // //controller.getCurrentUser(user);
-        //     console.log("next")
-        next();
-    
-    },
+
     
     // // middleware
     hasAuthorization : async(ctx, next, id) => {
@@ -277,20 +257,6 @@ let controller = {
         ctx.body = res;
     },
     
-    
-    
-    // findPeople = (req, res) => {
-    //     let following = req.profile.following;
-    //     following.push(req.profile._id);
-    //     User.find({ _id: { $nin: following } }, (err, users) => {
-    //         if (err) {
-    //             return res.status(400).json({
-    //                 error: err
-    //             });
-    //         }
-    //         res.json(users);
-    //     }).select('name');
-    // }
 };
 
 module.exports = controller
